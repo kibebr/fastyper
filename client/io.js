@@ -4,7 +4,7 @@ import { paintAll, clearCanvas, renderWord } from './canvasUtils.js'
 const words = ['test', 'vitor', 'rodrigues']
 
 let state = {
-  wordNodes: [createNormalWordNode('test'), createNormalWordNode('vitor')]
+  wordNodes: words.map(createNormalWordNode)
 }
 
 const canvas = document.getElementById('canvas')

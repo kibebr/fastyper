@@ -6,12 +6,9 @@ import { pipeArr, spec, map, prop, getRandomNumFromRange } from './utils.js'
 class MoveForwardSystem {
   static run = entity => ({
     ...entity,
-    components: {
-      ...entity.components,
-      position: {
-        ...entity.components.position,
-        x: entity.components.position.x + 1
-      }
+    position: {
+      ...entity.position,
+      x: entity.position.x + 1
     }
   })
 }
@@ -25,6 +22,7 @@ export const createNormalWordNode = word => ({}
   |> addForwardComponent
 )
 
+export const deleteWord = word => state => state.wordNodes.filter()
 export const nextState = spec({
   wordNodes: map(pipeArr(getRuns(systems)))
 })

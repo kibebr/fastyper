@@ -14,8 +14,8 @@ export const renderWord = word => canvas => {
   ctx.fillStyle = 'white'
   ctx.font = '16px monospace'
   ctx.fillText(
-    word.components.wordNode.word,
-    word.components.position.x,
-    word.components.position.y + 50
+    word.wordNode.word,
+    word.position.x,
+    word.position.y + 50
   )
 }
