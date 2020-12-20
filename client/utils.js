@@ -7,3 +7,4 @@ export const spec = novo => old => Object.keys(old)
 export const objOf = k => v => ({ [k]: v })
 export const map = fn => t => t.map(fn)
 export const prop = name => t => t[name]
+export const getRandomNumFromRange = (min, max) => (Math.random() * (max - min) + min) | 0

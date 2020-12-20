@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "run": "babel-node --config-file ./.babelrc main.js",
-    "run:babel": "babel main.js"
+    "serve": "webpack serve --config webpack.dev.js"
   },
   "author": "kibe",
   "license": "ISC",
@@ -17,9 +16,12 @@
     "@babel/plugin-proposal-class-properties": "^7.12.1",
     "@babel/plugin-proposal-pipeline-operator": "^7.12.1",
     "@babel/preset-env": "^7.12.11",
+    "babel-loader": "^8.2.2",
+    "html-webpack-plugin": "^4.5.0",
     "jest": "^26.6.3",
     "webpack": "^5.11.0",
     "webpack-cli": "^4.2.0",
-    "webpack-dev-server": "^3.11.0"
+    "webpack-dev-server": "^3.11.0",
+    "webpack-merge": "^5.7.2"
   }
 }
