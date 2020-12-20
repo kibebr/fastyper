@@ -1,7 +1,7 @@
 import { addWordNodeComponent } from './components/WordNode.js'
 import { addForwardComponent } from './components/Forward.js'
 import { addPositionComponent } from './components/Position.js'
-import { pipeArr, spec, map, prop, getRandomNumFromRange } from './utils.js'
+import { pipeArr, spec, map, prop, getRandomNumFromRange, equals } from './utils.js'
 
 class MoveForwardSystem {
   static run = entity => ({
@@ -22,7 +22,11 @@ export const createNormalWordNode = word => ({}
   |> addForwardComponent
 )
 
-export const deleteWord = word => state => state.wordNodes.filter()
+export const deleteWord = word => state => ({
+  ...state,
+  entities: state.entities.filter(entity => entity.wordNode.word !== word)
+})
+
 export const nextState = spec({
-  wordNodes: map(pipeArr(getRuns(systems)))
+  entities: map(pipeArr(getRuns(systems)))
 })
