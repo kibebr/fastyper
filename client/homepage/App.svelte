@@ -1,10 +1,22 @@
 <script>
-  import Router from 'svelte-spa-router'
+  import Router, { location } from 'svelte-spa-router'
   import Home from './routes/Home.svelte'
+  import Play from './routes/Play.svelte'
+  import Navbar from './components/Navbar.svelte'
+  import { onMount } from 'svelte'
+
+  let atTopOfPage = true
 
   const routes = {
-    '/': Home
+    '/': Home,
+    '/play': Play
   }
+
+  onMount(() => {
+    window.addEventListener('scroll', () => {
+      atTopOfPage = document.body.scrollTop === 0
+    })
+  })
 </script>
 
 <style>
@@ -12,8 +24,9 @@
 
   :global(html, body) {
     margin: 0;
-    background-color: black;
+    background-color: #0A0A0A;
     color: white;
+    font-family: 'VT323';
   }
 
   :global(.caret) {
@@ -25,12 +38,13 @@
   }
 
   :global(button) {
+    font-family: inherit;
     outline: none;
     border: 0;
-    padding: 8px;
-    background-color: #ffff00;
+    padding: 10px;
     color: black;
     font-size: 1.1em;
+    background-color: white;
   }
 
   @keyframes -global-animated-text {
@@ -44,4 +58,7 @@
   }
 </style>
 
+{#if !atTopOfPage || $location !== '/'}
+  <Navbar />
+{/if}
 <Router {routes} />

@@ -11,10 +11,10 @@ export const clearCanvas = canvas => {
 
 export const renderWord = word => canvas => {
   const ctx = canvas.getContext('2d')
-  ctx.fillStyle = 'white'
+  ctx.fillStyle = 'black'
   ctx.font = '16px monospace'
   ctx.fillText(
-    word.wordNode.word,
+    word.word,
     word.position.x,
     word.position.y + 50
   )

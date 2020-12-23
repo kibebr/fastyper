@@ -8,5 +8,16 @@ module.exports = {
     },
     extensions: ['.mjs', '.js', '.svelte'],
     mainFields: ['svelte', 'browser', 'module', 'main']
+  },
+  module: {
+    rules: [{
+      test: /\.js$/,
+      use: {
+        loader: 'babel-loader',
+      }
+    }]
+  },
+  devServer: {
+    disableHostCheck: true
   }
 }
