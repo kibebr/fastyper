@@ -11,7 +11,25 @@ module.exports = merge(common, {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: './index.html'
+      template: './homepage/template.html'
     })
-  ]
+  ],
+  module: {
+    rules: [{
+      test: /\.svelte$/,
+      use: {
+        loader: 'svelte-loader',
+        options: {
+          emitCss: false,
+          hotReload: true
+        }
+      }
+    }, {
+      test: /\.css$/,
+      use: [
+        'style-loader',
+        'css-loader'
+      ]
+    }]
+  }
 })
