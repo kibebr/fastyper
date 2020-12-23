@@ -5,7 +5,7 @@ import { getRandomNumFromRange } from './utils.js'
 
 const systems = [ForwardSystem]
 
-export const state = {
+const state = {
   entities: [],
   seconds: 0
 }

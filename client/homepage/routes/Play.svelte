@@ -71,6 +71,7 @@
 
 <div id='canvas-container' bind:this={container}>
 </div> 
+<!-- warn-disable a11y-missing-attribute -->
 <input 
      placeholder='TYPE' 
      autofocus 
