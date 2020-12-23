@@ -27,6 +27,7 @@
     background-color: #0A0A0A;
     color: white;
     font-family: 'VT323';
+    -webkit-font-smoothing: antialiased;
   }
 
   :global(button) {

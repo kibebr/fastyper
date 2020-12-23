@@ -1,4 +1,5 @@
 <script>
+  import { push } from 'svelte-spa-router'
 </script>
 
 <style>
@@ -55,7 +56,7 @@
   <section id='intro'>
     <h1>fastyper<span id='title-caret' class='blink'>_</span></h1>
     <p>A community-based typing game.</p>
-    <button>Play</button>
+    <button on:click={() => push('/play')}>Play</button>
   </section>
   <section id='about-1'>
     This is another div.

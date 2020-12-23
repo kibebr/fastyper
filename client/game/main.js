@@ -1,6 +1,7 @@
 import { ForwardSystem, addForwardComponent } from './modules/Forward.js'
 import { addPositionComponent } from './modules/Position.js'
 import { addSpeedComponent } from './modules/Speed.js'
+import { getRandomNumFromRange } from './utils.js'
 
 const systems = [ForwardSystem]
 
@@ -19,7 +20,7 @@ export const addWord = word => {
   addSpeedComponent(3)(newEntity)
   addPositionComponent({
     x: 0,
-    y: 0
+    y: getRandomNumFromRange(0, 550)
   })(newEntity)
   addForwardComponent(newEntity)
   state.entities.push(newEntity)
