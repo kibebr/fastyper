@@ -31,14 +31,17 @@
   }
 
   :global(button) {
-    font-family: inherit;
-    outline: none;
-    border: 0;
     padding: 10px;
     color: black;
     font-size: 1.1em;
     background-color: white;
     cursor: pointer;
+  }
+
+  :global(button, input) {
+    font-family: inherit;
+    outline: none;
+    border: 0;
   }
 
   :global(.blink) {

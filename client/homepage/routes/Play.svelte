@@ -13,16 +13,6 @@
   let container
   let prompt = ''
 
-  const handleKeydown = event => {
-    const { key } = event
-    console.log(String.fromCharCode(event.which))
-    if (key === 'Backspace') {
-      prompt = prompt.substring(0, prompt.length - 1)
-    } else if (key.match(/^[A-Za-z]+$/)){
-      prompt += key
-    }
-  }
-
   onMount(() => {
     addWord('test')
     addWord('test')
@@ -41,10 +31,10 @@
     }
   
     container.appendChild(canvas)
-    document.body.addEventListener('keydown', handleKeydown)
     gameLoop()
   })
 
+  $: console.log(prompt)
 </script>
 
 <style>
@@ -53,16 +43,23 @@
     position: absolute;
   }
 
-  #game-prompt {
+  input {
     position: absolute;
-    z-index: 1;
     bottom: 0;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 2em;
+    text-align: center;
+    font-size: 1.5em;
+    z-index: 1;
+    background-color: transparent;
+    color: white;
+  }
+
+  ::placeholder {
+    color: white;
   }
 </style>
 
 <div id='canvas-container' bind:this={container}>
 </div> 
-<span id='game-prompt'>{prompt || 'type!'}</span>
+<input placeholder='TYPE' autofocus bind:value={prompt}/>
