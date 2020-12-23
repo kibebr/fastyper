@@ -43,6 +43,12 @@
     transform: translate(-10px, 10px);
   }
 
+  @media screen and (max-width: 650px) {
+    #title-caret {
+      display: none;
+    }
+  }
+
 </style>
 
 <div>

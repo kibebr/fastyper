@@ -11,7 +11,7 @@
     width: 100%;
     height: 45px;
     background-color: #0A0A0A;
-    vertical-align: middle;
+    line-height: 40px;
   }
 
   #nav-title {
