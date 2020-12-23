@@ -38,21 +38,16 @@
     background-color: #191919;
   }
 
-  @keyframes blink-anim {
-    to { visibility: hidden }
-  }
-
-  .blink {
-    display: none;
-    transform: translateY(10px);
-    animation: blink-anim 0.9s steps(2, start) infinite;
+  #title-caret {
+    position: absolute;
+    transform: translate(-10px, 10px);
   }
 
 </style>
 
 <div>
   <section id='intro'>
-    <h1>fastyper<span class='blink'>_</span></h1>
+    <h1>fastyper<span id='title-caret' class='blink'>_</span></h1>
     <p>A community-based typing game.</p>
     <button>Play</button>
   </section>

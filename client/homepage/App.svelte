@@ -29,14 +29,6 @@
     font-family: 'VT323';
   }
 
-  :global(.caret) {
-    border-bottom: solid 3px rgba(0,255,0,.75);
-    position: absolute;
-    right: -7px;
-    width: 20px;
-    animation: animated-cursor 600ms steps(30, end) infinite;
-  }
-
   :global(button) {
     font-family: inherit;
     outline: none;
@@ -45,6 +37,11 @@
     color: black;
     font-size: 1.1em;
     background-color: white;
+    cursor: pointer;
+  }
+
+  :global(.blink) {
+    animation: blink-anim 0.9s steps(2, start) infinite;
   }
 
   @keyframes -global-animated-text {
@@ -52,9 +49,8 @@
     to{width: 100%;}
   }
 
-  @keyframes -global-animated-cursor {
-    from{border-bottom-color: rgba(0,255,0,.75);}
-    to{border-bottom-color: transparent;}
+  @keyframes -global-blink-anim {
+    to { visibility: hidden }
   }
 </style>
 
