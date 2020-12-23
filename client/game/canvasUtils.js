@@ -1,5 +1,14 @@
 export const getRandomNumFromRange = (min, max) => (Math.random() * (max - min) + min) | 0
 
+export const createCanvas = ({ width, height }) => {
+  const canvas = document.createElement('canvas')
+  canvas.width = width
+  canvas.height = height
+  canvas.style.width = width
+  canvas.style.height = height
+  return canvas
+}
+
 export const createCanvasRenderer = canvas => {
   const ctx = canvas.getContext('2d')
   const stars = new Array(500)
