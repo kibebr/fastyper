@@ -29,7 +29,7 @@ export const createCanvasRenderer = canvas => {
     },
     renderWord: word => {
       ctx.fillStyle = 'white'
-      ctx.font = '24px VT323'
+      ctx.font = '20px VT323'
       ctx.fillText(
         word.word,
         word.position.x,

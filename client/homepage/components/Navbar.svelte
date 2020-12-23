@@ -1,5 +1,6 @@
 <script>
   import { fade } from 'svelte/transition'
+  import { push } from 'svelte-spa-router'
 </script>
 
 <style>
@@ -22,12 +23,18 @@
     font-style: italic;
     letter-spacing: .05em;
     vertical-align: middle;
+    cursor: pointer;
   }
 
   #nav-buttons {
     float: right;
     display: inline-block;
     padding-right: 40px;
+  }
+
+  #nav-caret {
+    position: absolute;
+    transform: translateY(1px);
   }
 
   button {
@@ -37,7 +44,9 @@
 </style>
 
 <nav transition:fade='{{ duration: 80 }}'>
-  <span id='nav-title'>f<span class='blink'>_</span></span>
+  <span id='nav-title' on:click={() => push('/')}>
+    f<span id='nav-caret' class='blink'>_</span>
+  </span>
   <div id='nav-buttons'>
     <button>Log-in</button>
   </div>

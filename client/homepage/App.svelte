@@ -1,7 +1,7 @@
 <script>
   import Router, { location } from 'svelte-spa-router'
+  import { wrap } from 'svelte-spa-router/wrap'
   import Home from './routes/Home.svelte'
-  import Play from './routes/Play.svelte'
   import Navbar from './components/Navbar.svelte'
   import { onMount } from 'svelte'
 
@@ -9,7 +9,9 @@
 
   const routes = {
     '/': Home,
-    '/play': Play
+    '/play': wrap({
+      asyncComponent: () => import('./routes/Play.svelte')
+    })
   }
 
   onMount(() => {
@@ -46,6 +48,11 @@
 
   :global(.blink) {
     animation: blink-anim 0.9s steps(2, start) infinite;
+  }
+
+  :global(::selection) {
+    color: black;
+    background-color: yellow;
   }
 
   @keyframes -global-animated-text {

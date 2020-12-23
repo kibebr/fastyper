@@ -1,6 +1,6 @@
 <script>
   import { createCanvas, createCanvasRenderer } from '../../game/canvasUtils.js'
-  import { update, addWord, getWords, } from '../../game/main.js' 
+  import { update, addWord, getWords, findAndDeleteWord, startTimer } from '../../game/main.js' 
   import { setBaseSpeed } from '../../game/modules/Speed.js'
   import { onMount } from 'svelte' 
 
@@ -15,30 +15,39 @@
 
   onMount(() => {
     addWord('test')
-    addWord('test')
-    addWord('test')
-    addWord('test')
+    addWord('absolute')
+    addWord('many')
+    addWord('driving')
+
     const gameLoop = () => {
       update()
+
       renderer.clearCanvas()
       renderer.paintAll('black')
-      getWords()
-        .forEach(word => {
-          renderer.renderWord(word)
-        })
+
+      getWords().forEach(renderer.renderWord)
+
       renderer.renderStars()
+
       window.requestAnimationFrame(gameLoop)
     }
   
     container.appendChild(canvas)
+    startTimer()
     gameLoop()
   })
 
-  $: console.log(prompt)
+  $: {
+    const result = findAndDeleteWord(prompt)
+    if (result) {
+      prompt = ''
+      console.log('deleted: ', result)
+    }
+  }
+
 </script>
 
 <style>
-    
   #canvas-container {
     position: absolute;
   }
@@ -62,4 +71,11 @@
 
 <div id='canvas-container' bind:this={container}>
 </div> 
-<input placeholder='TYPE' autofocus bind:value={prompt}/>
+<input 
+     placeholder='TYPE' 
+     autofocus 
+     spellcheck=false
+     bind:value={prompt} 
+     on:blur={({ target }) => target.focus()}
+     on:paste={event => event.preventDefault()}
+/>
