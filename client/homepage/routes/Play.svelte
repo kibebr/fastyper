@@ -1,29 +1,40 @@
 <script>
   import { createCanvas, createCanvasRenderer } from '../../game/canvasUtils.js'
-  import { update, addWord, getWords, findAndDeleteWord, startTimer } from '../../game/main.js' 
+  import { update, addWord, getWords, findAndDeleteWord, startTimer, setPrompt, createState } from '../../game/main.js' 
   import { fetchWordsFrom } from '../utils/fetcher.js'
   import { onMount } from 'svelte' 
+
+  const onWordDestroyed = word => {
+    console.log('play received destroyed ', word)
+  }
 
   const canvas = createCanvas({
     width: document.body.clientWidth,
     height: document.body.clientHeight
   })
   const renderer = createCanvasRenderer(canvas)
+  const state = createState({ 
+    width: canvas.width,
+    height: canvas.height,
+    callbacks: {
+      onDestroy: onWordDestroyed
+    }
+  })
 
   let container
   let prompt = ''
 
   onMount(async () => {
     const fetchedWords = await fetchWordsFrom('10')
-    fetchedWords.forEach(addWord)
+    fetchedWords.forEach(state.addWord)
 
     const gameLoop = () => {
-      update()
+      state.update()
 
       renderer.clearCanvas()
       renderer.paintAll('black')
 
-      getWords().forEach(renderer.renderWord)
+      state.getWords().forEach(renderer.renderWord)
 
       renderer.renderStars()
 
@@ -31,16 +42,11 @@
     }
   
     container.appendChild(canvas)
-    startTimer()
+    state.startTimer()
     gameLoop()
   })
 
   $: {
-    const result = findAndDeleteWord(prompt)
-    if (result) {
-      prompt = ''
-      console.log('deleted: ', result)
-    }
   }
 
 </script>

@@ -2,46 +2,54 @@ import { ForwardSystem, addForwardComponent } from './modules/Forward.js'
 import { addPositionComponent } from './modules/Position.js'
 import { addSpeedComponent } from './modules/Speed.js'
 import { getRandomNumFromRange } from './utils.js'
+import { addBoundaryCollisionComponent, createBoundaryCollisionSystem } from './modules/BoundaryCollision.js'
 
-const systems = [ForwardSystem]
+export const createState = ({ width, height, callbacks }) => {
+  const state = {
+    prompt: '',
+    seconds: 0,
+    wpm: 0,
+    entities: []
+  }
 
-const state = {
-  entities: [],
-  seconds: 0,
-  wpm: 0
-}
+  const handleWordBoundaryCollision = word => {
+    console.log('passed: ', word)
+    callbacks.onDestroy(word)
+  }
 
-export const queryByWord = word => state.entities.find(entity => entity.word === word)
+  const systems = [
+    ForwardSystem,
+    createBoundaryCollisionSystem({
+      limit: width,
+      onCollision: handleWordBoundaryCollision
+    })
+  ]
 
-export const update = () => {
-  systems.forEach(system => system.run(state.entities))
-}
+  return {
+    update: () => {
+      systems.forEach(system => system.run(state.entities))
+    },
 
-export const addWord = word => {
-  const newEntity = { word }
-  addSpeedComponent(3)(newEntity)
-  addPositionComponent({
-    x: getRandomNumFromRange(-100, 100),
-    y: getRandomNumFromRange(0, 550)
-  })(newEntity)
-  addForwardComponent(newEntity)
-  state.entities = state.entities.concat(newEntity)
-}
+    addWord: word => {
+      const newEntity = { word }
+      addSpeedComponent(3)(newEntity)
+      addPositionComponent({
+        x: getRandomNumFromRange(-100, 100),
+        y: getRandomNumFromRange(0, height + 1)
+      })(newEntity)
+      addForwardComponent(newEntity)
+      addBoundaryCollisionComponent(newEntity)
+      state.entities = state.entities.concat(newEntity)
+    },
 
-export const getWords = () => state.entities.filter(entity => 'word' in entity)
+    setPrompt: newPrompt => {
+      state.prompt = newPrompt
+    },
 
-export const findAndDeleteWord = word => {
-  const entity = state.entities.find(entity => entity.word === word)
+    getWords: () => state.entities.filter(entity => 'word' in entity),
 
-  if (entity) {
-    state.entities = state.entities.filter(_entity => _entity !== entity)
-    return entity
-  } else {
-    return null
+    startTimer: () => setInterval(() => {
+      state.seconds += 1
+    }, 1000)
   }
 }
-
-export const startTimer = () => setInterval(() => {
-  state.seconds += 1
-}, 1000)
-
