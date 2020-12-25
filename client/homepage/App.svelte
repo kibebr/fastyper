@@ -30,6 +30,7 @@
     color: white;
     font-family: 'VT323';
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   :global(button) {

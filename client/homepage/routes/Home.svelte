@@ -45,8 +45,16 @@
   }
 
   @media screen and (max-width: 650px) {
+    h1 {
+      font-size: 22vw;
+    }
+
     #title-caret {
       display: none;
+    }
+
+    p {
+      font-size: 6vw;  
     }
   }
 
@@ -55,10 +63,10 @@
 <div>
   <section id='intro'>
     <h1>fastyper<span id='title-caret' class='blink'>_</span></h1>
-    <p>A community-based typing game.</p>
+    <p>A community-focused typing speed test game.</p>
     <button on:click={() => push('/play')}>Play</button>
   </section>
   <section id='about-1'>
-    This is another div.
+    <p>This is another section.</p>
   </section>
 </div>

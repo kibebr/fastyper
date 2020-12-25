@@ -1,7 +1,7 @@
 <script>
   import { createCanvas, createCanvasRenderer } from '../../game/canvasUtils.js'
   import { update, addWord, getWords, findAndDeleteWord, startTimer } from '../../game/main.js' 
-  import { setBaseSpeed } from '../../game/modules/Speed.js'
+  import { fetchWordsFrom } from '../utils/fetcher.js'
   import { onMount } from 'svelte' 
 
   const canvas = createCanvas({
@@ -13,11 +13,9 @@
   let container
   let prompt = ''
 
-  onMount(() => {
-    addWord('test')
-    addWord('absolute')
-    addWord('many')
-    addWord('driving')
+  onMount(async () => {
+    const fetchedWords = await fetchWordsFrom('10')
+    fetchedWords.forEach(addWord)
 
     const gameLoop = () => {
       update()

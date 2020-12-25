@@ -7,7 +7,8 @@ const systems = [ForwardSystem]
 
 const state = {
   entities: [],
-  seconds: 0
+  seconds: 0,
+  wpm: 0
 }
 
 export const queryByWord = word => state.entities.find(entity => entity.word === word)
@@ -20,7 +21,7 @@ export const addWord = word => {
   const newEntity = { word }
   addSpeedComponent(3)(newEntity)
   addPositionComponent({
-    x: 0,
+    x: getRandomNumFromRange(-100, 100),
     y: getRandomNumFromRange(0, 550)
   })(newEntity)
   addForwardComponent(newEntity)
@@ -40,8 +41,7 @@ export const findAndDeleteWord = word => {
   }
 }
 
-export const startTimer = () => {
-  setInterval(() => {
-    state.seconds += 1
-  }, 1000)
-}
+export const startTimer = () => setInterval(() => {
+  state.seconds += 1
+}, 1000)
+

@@ -1,6 +1,9 @@
 <script>
   import { fade } from 'svelte/transition'
   import { push } from 'svelte-spa-router'
+  import LoginModal from './LoginModal.svelte'
+
+  let isLoginModalOpen = false
 </script>
 
 <style>
@@ -37,6 +40,13 @@
     transform: translateY(1px);
   }
 
+  #close-loginmodal-btn {
+    background-color: red;
+    color: white;
+    padding: 3px;
+    width: 20px;
+  }
+
   button {
     margin-top: 10px;
     padding: 3px;
@@ -48,6 +58,13 @@
     f<span id='nav-caret' class='blink'>_</span>
   </span>
   <div id='nav-buttons'>
-    <button>Log-in</button>
+    {#if !isLoginModalOpen}
+      <button on:click={() => isLoginModalOpen = true}>Log-in</button>
+    {:else}
+      <button id='close-loginmodal-btn' on:click={() => isLoginModalOpen = false}>X</button>
+    {/if}
   </div>
 </nav>
+{#if isLoginModalOpen}
+  <LoginModal onClose={() => isLoginModalOpen = false} />
+{/if}
