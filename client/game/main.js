@@ -12,9 +12,10 @@ export const createState = ({ width, height, callbacks }) => {
     entities: []
   }
 
-  const handleWordBoundaryCollision = word => {
-    console.log('passed: ', word)
-    callbacks.onDestroy(word)
+  const handleWordBoundaryCollision = entity => {
+    if (!'bomb' in entity) {
+      callbacks.onOver()
+    }
   }
 
   const systems = [
@@ -28,10 +29,20 @@ export const createState = ({ width, height, callbacks }) => {
   return {
     update: () => {
       systems.forEach(system => system.run(state.entities))
+
+      state.entities
+        .filter(entity => 'word' in entity)
+        .forEach(wordEntity => {
+          if (wordEntity.word === state.prompt) {
+            state.entities = state.entities.filter(ent => ent !== wordEntity)
+            callbacks.onDestroy(wordEntity)
+          } 
+        })
     },
 
     addWord: word => {
       const newEntity = { word }
+
       addSpeedComponent(3)(newEntity)
       addPositionComponent({
         x: getRandomNumFromRange(-100, 100),
@@ -39,6 +50,7 @@ export const createState = ({ width, height, callbacks }) => {
       })(newEntity)
       addForwardComponent(newEntity)
       addBoundaryCollisionComponent(newEntity)
+
       state.entities = state.entities.concat(newEntity)
     },
 

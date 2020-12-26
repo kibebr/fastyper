@@ -1,9 +1,7 @@
-const COMPONENT_NAME = 'forward'
-
 export class ForwardSystem {
   static run = entities => {
     entities
-      .filter(entity => COMPONENT_NAME in entity)
+      .filter(entity => 'forward' in entity && 'position' in entity && 'speed' in entity)
       .forEach(entity => {
         entity.position.x += entity.speed.getSpeed()
       })
@@ -11,5 +9,5 @@ export class ForwardSystem {
 }
 
 export const addForwardComponent = entity => {
-  entity[COMPONENT_NAME] = {}
+  entity['forward'] = {}
 }

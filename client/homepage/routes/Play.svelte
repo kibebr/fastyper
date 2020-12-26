@@ -1,28 +1,36 @@
 <script>
   import { createCanvas, createCanvasRenderer } from '../../game/canvasUtils.js'
-  import { update, addWord, getWords, findAndDeleteWord, startTimer, setPrompt, createState } from '../../game/main.js' 
+  import { createState } from '../../game/main.js' 
   import { fetchWordsFrom } from '../utils/fetcher.js'
   import { onMount } from 'svelte' 
 
   const onWordDestroyed = word => {
     console.log('play received destroyed ', word)
+    prompt = ''
+  }
+
+  const onGameOver = () => {
+    console.log('game over')
   }
 
   const canvas = createCanvas({
     width: document.body.clientWidth,
     height: document.body.clientHeight
   })
+
   const renderer = createCanvasRenderer(canvas)
   const state = createState({ 
     width: canvas.width,
     height: canvas.height,
     callbacks: {
-      onDestroy: onWordDestroyed
+      onDestroy: onWordDestroyed,
+      onOver: onGameOver
     }
   })
 
   let container
   let prompt = ''
+  let gameState = 'RUNNING'
 
   onMount(async () => {
     const fetchedWords = await fetchWordsFrom('10')
@@ -47,6 +55,7 @@
   })
 
   $: {
+    state.setPrompt(prompt)
   }
 
 </script>
@@ -77,7 +86,7 @@
 </div> 
 <!-- warn-disable a11y-missing-attribute -->
 <input 
-     placeholder='TYPE' 
+     placeholder={gameState ? 'TYPE' : 'OVER'} 
      autofocus 
      spellcheck=false
      bind:value={prompt} 
