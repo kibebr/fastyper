@@ -2,6 +2,7 @@
   import Router, { location } from 'svelte-spa-router'
   import { wrap } from 'svelte-spa-router/wrap'
   import Home from './routes/Home.svelte'
+  import Profile from './routes/Profile.svelte'
   import Navbar from './components/Navbar.svelte'
   import { onMount } from 'svelte'
 
@@ -11,7 +12,8 @@
     '/': Home,
     '/play': wrap({
       asyncComponent: () => import('./routes/Play.svelte')
-    })
+    }),
+    '/profile/:username': Profile
   }
 
   onMount(() => {

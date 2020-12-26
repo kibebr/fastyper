@@ -23,7 +23,7 @@
     font-family: 'VT323';
     letter-spacing: .10em;
     text-shadow: 0.3vw 0.5vh 1px #ff00ff;
-    color: red;
+    color: #ff0a3b;
   }
 
   p {

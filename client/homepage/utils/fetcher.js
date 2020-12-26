@@ -15,3 +15,8 @@ export const fetchWordsFrom = id => new Promise((resolve, reject) => {
     'linux'
   ])
 })
+
+export const fetchUserWithUsername = username => new Promise(resolve => resolve({
+  username: 'kibe',
+  level: 'Professional'
+}))

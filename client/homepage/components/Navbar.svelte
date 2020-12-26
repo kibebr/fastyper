@@ -1,6 +1,6 @@
 <script>
   import { fade } from 'svelte/transition'
-  import { push } from 'svelte-spa-router'
+  import { push, location } from 'svelte-spa-router'
   import LoginModal from './LoginModal.svelte'
 
   let isLoginModalOpen = false
@@ -15,12 +15,11 @@
     width: 100%;
     height: 45px;
     background-color: #0A0A0A;
-    line-height: 40px;
   }
 
   #nav-title {
     display: inline-block;
-    color: red;
+    color: #ff0a3b;
     text-shadow: 1px 1px 1px #ff00ff;
     font-size: 2em;
     font-style: italic;
@@ -31,7 +30,6 @@
 
   #nav-buttons {
     float: right;
-    display: inline-block;
     padding-right: 40px;
   }
 
@@ -45,9 +43,19 @@
     color: white;
     padding: 3px;
     width: 20px;
+    min-width: 0;
+  }
+
+  #nav-play-btn {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #ff0a3b;
+    color: white;
   }
 
   button {
+    min-width: 40px;
     margin-top: 10px;
     padding: 3px;
   }
@@ -57,6 +65,7 @@
   <span id='nav-title' on:click={() => push('/')}>
     f<span id='nav-caret' class='blink'>_</span>
   </span>
+    <button id='nav-play-btn' on:click={() => push('/play')}>Play</button>
   <div id='nav-buttons'>
     {#if !isLoginModalOpen}
       <button on:click={() => isLoginModalOpen = true}>Log-in</button>
