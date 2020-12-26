@@ -51,6 +51,7 @@
     left: 50%;
     transform: translateX(-50%);
     background-color: #ff0a3b;
+    margin-left: -11px;
     color: white;
   }
 
