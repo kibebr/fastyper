@@ -36,11 +36,16 @@
   }
 
   :global(button) {
+    position: relative;
     padding: 10px;
     color: black;
     font-size: 1.1em;
     background-color: white;
     cursor: pointer;
+  }
+
+  :global(button:active) {
+    top: 2px;
   }
 
   :global(button, input) {
@@ -56,11 +61,6 @@
   :global(::selection) {
     color: black;
     background-color: yellow;
-  }
-
-  @keyframes -global-animated-text {
-    from{width: 0;}
-    to{width: 100%;}
   }
 
   @keyframes -global-blink-anim {
