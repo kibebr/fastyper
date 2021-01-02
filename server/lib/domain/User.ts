@@ -29,11 +29,15 @@ const strHas = (str: string) => (str2: string): Either<string, string> =>
    ? right(str)
    : left(`${str} does not contain ${str2}.`)
 
-const isAlpha = (str: string): boolean => /^[a-z0-9]+$/i.test(str)
+const isAlphanumeric = (str: string): Either<string, string> => 
+  /^[a-z0-9]+$/i.test(str)
+    ? right(str)
+    : left(` is not alphanumeric.`)
 
 export const createUsername: (username: string) => Either<string, Username> = flow(
   isMinLength(3),
   chain(isMaxLength(10)),
+  chain(isAlphanumeric),
   map(iso<Username>().wrap)
 )
 
