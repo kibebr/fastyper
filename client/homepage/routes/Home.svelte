@@ -66,7 +66,4 @@
     <p>A community-focused typing speed test game.</p>
     <button on:click={() => push('/play')}>Play</button>
   </section>
-  <section id='about-1'>
-    <p>This is another section.</p>
-  </section>
 </div>

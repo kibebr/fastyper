@@ -9,6 +9,23 @@ export const createCanvas = ({ width, height }) => {
   return canvas
 }
 
+export const paintAll = color => canvas => {
+  const ctx = canvas.getContext('2d')
+  ctx.fillStyle = color
+  ctx.fillRect(0, 0, canvas.width, canvas.height)
+}
+
+export const renderWord = word => canvas => {
+  const ctx = canvas.getContext('2d')
+  ctx.fillStyle = 'white'
+  ctx.font = 'normal 16px VT323'
+  ctx.fillText(
+    word.word,
+    word.position.x,
+    word.position.y
+  )  
+}
+
 export const createCanvasRenderer = canvas => {
   const ctx = canvas.getContext('2d')
   const stars = new Array(500)

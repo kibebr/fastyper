@@ -1,8 +1,10 @@
 <script>
-  import { createCanvas, createCanvasRenderer } from '../../game/canvasUtils.js'
+  import { createCanvas, createCanvasRenderer } from '../utils/Canvas.js'
   import { createState } from '../../game/main.js' 
   import { fetchWordsFrom } from '../utils/fetcher.js'
   import { onMount } from 'svelte' 
+
+  export let params
 
   const onWordDestroyed = word => {
     console.log('play received destroyed ', word)

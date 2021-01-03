@@ -3,6 +3,7 @@
   import { wrap } from 'svelte-spa-router/wrap'
   import Home from './routes/Home.svelte'
   import Profile from './routes/Profile.svelte'
+  import Words from './routes/Words.svelte'
   import Navbar from './components/Navbar.svelte'
   import { onMount } from 'svelte'
 
@@ -10,10 +11,11 @@
 
   const routes = {
     '/': Home,
-    '/play': wrap({
+    '/profile/:username': Profile,
+    '/play': Words,
+    '/play/:id': wrap({
       asyncComponent: () => import('./routes/Play.svelte')
-    }),
-    '/profile/:username': Profile
+    }) 
   }
 
   onMount(() => {
@@ -28,6 +30,7 @@
 
   :global(html, body) {
     margin: 0;
+    margin-left: 25px;
     background-color: #0A0A0A;
     color: white;
     font-family: 'VT323';
@@ -42,6 +45,10 @@
     font-size: 1.1em;
     background-color: white;
     cursor: pointer;
+  }
+
+  :global(h1) {
+    font-weight: normal;
   }
 
   :global(button:active) {
@@ -68,7 +75,5 @@
   }
 </style>
 
-{#if !atTopOfPage || $location !== '/'}
-  <Navbar />
-{/if}
+<Navbar />
 <Router {routes} />
