@@ -37,6 +37,7 @@
     width: 100%;
     height: 50px;
     cursor: pointer;
+    transition: background-color 0.2s;
   }
 
   .nav-square:hover {
