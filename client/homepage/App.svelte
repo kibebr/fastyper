@@ -1,15 +1,12 @@
 <script>
-  import Router, { location } from 'svelte-spa-router'
+  import Router from 'svelte-spa-router'
   import { wrap } from 'svelte-spa-router/wrap'
   import Home from './routes/Home.svelte'
   import Profile from './routes/Profile.svelte'
   import Words from './routes/Words.svelte'
   import Navbar from './components/Navbar.svelte'
   import MobileNavbar from './components/MobileNavbar.svelte'
-  import { onMount } from 'svelte'
   import MediaQuery from 'svelte-media-query'
-
-  let atTopOfPage = true
 
   const routes = {
     '/': Home,
@@ -19,12 +16,6 @@
       asyncComponent: () => import('./routes/Play.svelte')
     }) 
   }
-
-  onMount(() => {
-    window.addEventListener('scroll', () => {
-      atTopOfPage = document.body.scrollTop === 0
-    })
-  })
 </script>
 
 <style>
