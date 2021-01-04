@@ -3,19 +3,21 @@
   import { slide } from 'svelte/transition'
   import { getRandomNumFromRange } from '../../game/utils.js'
   import { onMount } from 'svelte'
-    
+
+  let filter = ''
+
   const wordsList = [
     {
       id: '19',
       difficulty: 'easy',
       title: 'English 1',
-      preview: ['banana', 'test', 'coco', 'brand', 'new', 'man', 'i', 'saw', 'the', 'light', 'baptized']
+      preview: ['banana', 'test', 'coco', 'brand', 'new', 'man', 'i', 'saw', 'the', 'light', 'baptized', 'headlights', 'stared', 'down', 'coast', 'police', 'rahleigh', 'baby', 'tonight', 'rock', 'mama']
     },
     {
       id: '20',
       difficulty: 'hard',
       title: 'English 2',
-      preview: ['english', 'math', 'science', 'flow', 'pipe', 'coco', 'xixi', 'ground', 'skatepark', 'skate']
+      preview: ['english', 'math', 'science', 'flow', 'pipe', 'coco', 'xixi', 'ground', 'skatepark', 'skate', 'hey', 'momma', 'me', 'wind', 'and', 'rain', 'southbound', 'train', 'coast']
     }
   ]
 
@@ -47,12 +49,11 @@
 
     loop()
   })
+
 </script>
 
 <style>
   section {
-    padding-top: 50px;
-    padding-left: 50px;
     height: 500px;
   }
 
@@ -60,13 +61,12 @@
     margin: 0;
     margin-bottom: 20px;
     font-size: 3em;
-    color: magenta;
-    text-shadow: 2px 2px 1px red;
   }
 
   #word-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    padding: 20px;
   }
 
   .words-card {
@@ -77,7 +77,7 @@
     color: white;
     cursor: pointer;
     overflow: hidden;
-    border: 2px solid white !important;
+    border: 1px solid rgba(255, 255, 255, 0.1);
   }
 
   .words-card:hover {
@@ -91,7 +91,7 @@
   .words-difficulty {
     position: absolute;
     top: 0;
-    right: 10px;
+    right: 0;
     color: #00ff80;
     font-size: 24px;
     padding: 5px;
@@ -102,10 +102,17 @@
     bottom: 0;
     width: 100%;
     height: 100px;
-    background-color: white;
-    color: black;
-    padding-top: 5px;
+    background-color: rgba(0, 0, 0, 0.5);
     padding-left: 15px;
+  }
+
+  .words-info>h2 {
+    font-size: 32px;
+    margin: 0;
+  }
+
+  .words-info>span {
+    font-size: 16px;
   }
 
   .word {
@@ -113,17 +120,35 @@
     position: absolute;
     left: 0;
   }
+
+  #intro {
+    text-align: center;
+    width: 100%;
+    height: 130px;
+    margin-bottom: 30px;
+    border-bottom: 1px solid #232323;
+  }
+
+  input {
+    border: 2px solid #232323;
+    font-size: 1.2em;
+    height: 30px;
+    padding-left: 5px;
+  }
 </style>
 
 <section transition:slide='{{ duration: 150 }}'>
-  <h1>/words</h1>
+  <div id='intro'>
+    <h1>/words</h1>
+    <input placeholder='Search...' bind:value={filter} />
+  </div>
 
   <div id='word-list'>
     {#each wordsList as wordList}
-      <div class='words-card' on:click={() => push(`/play/${wordList.id}`)}>
+      <div class='words-card' in:slide='{{ duration: 300 }}' on:click={() => push(`/play/${wordList.id}`)} style='visibility: visible'>
         <div class='words-background'>
           {#each wordList.preview as word}
-            <span class='word' style='left: {getRandomNumFromRange(0, 400)}; top: {getRandomNumFromRange(0, 400)}'>
+            <span class='word' style='left: {getRandomNumFromRange(0, 400)}; top: {getRandomNumFromRange(0, 480)}'>
               {word}
             </span>
           {/each}
@@ -131,8 +156,9 @@
         <span class='words-difficulty' style='color: {getDifficultyColor(wordList.difficulty)}'>
           {wordList.difficulty.toUpperCase()}
         </span>
-        <div class='words-info' >
+        <div class='words-info'>
           <h2 class='words-title'>{wordList.title}</h2>
+          <span>Times played: 0</span>
         </div>
       </div>
     {/each}

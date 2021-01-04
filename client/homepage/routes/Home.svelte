@@ -1,5 +1,6 @@
 <script>
   import { push } from 'svelte-spa-router'
+  import { fade } from 'svelte/transition'
 </script>
 
 <style>
@@ -32,6 +33,7 @@
 
   button {
     padding: 1vmax;
+    min-width: 50px;
     width: 10vw;
   }
 
@@ -60,7 +62,7 @@
 
 </style>
 
-<div>
+<div in:fade='{{ duration: 100 }}'>
   <section id='intro'>
     <h1>fastyper<span id='title-caret' class='blink'>_</span></h1>
     <p>A community-focused typing speed test game.</p>

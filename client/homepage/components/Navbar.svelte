@@ -15,6 +15,7 @@
     width: 50px;
     z-index: 1;
     background-color: #0A0A0A;
+    border-right: 1px solid #232323;
   }
 
   #nav-title {
@@ -63,8 +64,8 @@
   }
 
   #nav-user-btn {
-    width: 24px;
-    height: 24px;
+    width: 28px;
+    height: 28px;
   }
 </style>
 
@@ -83,9 +84,7 @@
 
   <div id='nav-user-square' class='nav-square'>
     <svg xmlns="http://www.w3.org/2000/svg" id='nav-user-btn' class="nav-el nav-icon" viewBox="0 0 16 16">
-      <path d="M13.468 12.37C12.758 11.226 11.195 10 8 10s-4.757 1.225-5.468 2.37A6.987 6.987 0 0 0 8 15a6.987 6.987 0 0 0 5.468-2.63z"/>
-      <path fill-rule="evenodd" d="M8 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
-      <path fill-rule="evenodd" d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zM0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8z"/>
+      <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
     </svg>
   </div>
 </nav>

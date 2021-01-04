@@ -5,7 +5,9 @@
   import Profile from './routes/Profile.svelte'
   import Words from './routes/Words.svelte'
   import Navbar from './components/Navbar.svelte'
+  import MobileNavbar from './components/MobileNavbar.svelte'
   import { onMount } from 'svelte'
+  import MediaQuery from 'svelte-media-query'
 
   let atTopOfPage = true
 
@@ -73,7 +75,19 @@
   @keyframes -global-blink-anim {
     to { visibility: hidden }
   }
+
+  @media screen and (max-width: 500px) {
+    :global(html, body) {
+      margin-left: 0px !important;
+    }
+  }
 </style>
 
-<Navbar />
+<MediaQuery query='(max-width: 500px)' let:matches>
+  {#if matches}
+    <MobileNavbar />
+  {:else}
+    <Navbar />
+  {/if}
+</MediaQuery>
 <Router {routes} />
