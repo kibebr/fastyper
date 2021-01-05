@@ -1,12 +1,22 @@
 import { map, Either } from 'fp-ts/lib/Either'
-import { flow } from 'fp-ts/lib/function'
-import { createUser, User, UserDTO } from '../domain/User'
+import { flow, pipe } from 'fp-ts/lib/function'
+import { parseUser, User, ParsedUser, UnparsedUser } from '../domain/User'
+import { generateId, generatePasswordHash } from './Utils'
+import * as US from '../repositories/sql/UserRepository'
 
-export const add: (user: UserDTO) => Either<string, User> = flow(
-  createUser,
-  map(saveUser)
-)
+const addIdToUser = (user: ParsedUser): Either<string, ParsedUser> => ({
+  id: '10',
+  ...user
+})
 
-export const findByUsername: (username: string) => Either<string, User> = flow(
+export const addUser: (user: UnparsedUser) => Either<string, User> = flow(
+  parseUser,
+  map(addIdToUser),
+  map(hashUserPassword),
   
 )
+
+// get controller user
+// convert to parsed user (validate username, email, password)
+// convert to domain (add id and hashed password)
+

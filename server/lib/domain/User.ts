@@ -1,19 +1,22 @@
-import { map, chain, Either } from 'fp-ts/lib/Either'
+import { map, chain, right, Either } from 'fp-ts/lib/Either'
 import { flow } from 'fp-ts/lib/function'
 import { iso, Newtype } from 'newtype-ts'
 import { isMinLength, isMaxLength, strHas, isAlphanumeric } from '../utils/String'
 
 interface Username extends Newtype<{ readonly Username: unique symbol }, string> {}
 interface Email extends Newtype<{ readonly Email: unique symbol }, string> {}
-interface Password extends Newtype<{ readonly Password: unique symbol }, string> {}
+interface ParsedPassword extends Newtype<{ readonly ParsedPassword: unique symbol }, string> {}
 
-export type User = {
+export type ParsedUser = {
+  id?: string,
   username: Username,
   email: Email,
-  password: Password
+  password: ParsedPassword
 }
 
-export type UserDTO = {
+export type User = { id: string } & ParsedUser
+
+export type UnparsedUser = {
   username: string,
   email: string,
   password: string
@@ -32,17 +35,17 @@ const createEmail: (email: string) => Either<string, Email> = flow(
   map(iso<Email>().wrap)
 )
 
-const createPassword: (password: string) => Either<string, Password> = flow(
+const createParsedPassword: (password: string) => Either<string, ParsedPassword> = flow(
   isMinLength(6),
-  map(iso<Password>().wrap)
+  map(iso<ParsedPassword>().wrap)
 )
 
-export const createUser = (user: UserDTO): User => {
-  const _user: User = {
+export const parseUser = (uP: UnparsedUser): Either<string, ParsedUser> => {
+  const user: ParsedUser = {
     username: iso<Username>().wrap('username'),
     email: iso<Email>().wrap('mail@mail.com'),
-    password: iso<Password>().wrap('pwd')
+    password: iso<ParsedPassword>().wrap('pwd')
   }
   
-  return _user
+  return right(user)
 }
