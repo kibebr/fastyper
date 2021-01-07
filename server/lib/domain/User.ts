@@ -3,22 +3,29 @@ import { flow } from 'fp-ts/lib/function'
 import { iso, Newtype } from 'newtype-ts'
 import { isMinLength, isMaxLength, strHas, isAlphanumeric } from '../utils/String'
 
+type Modify<T, R> = Omit<T, keyof R> & R;
+
 interface Username extends Newtype<{ readonly Username: unique symbol }, string> {}
 interface Email extends Newtype<{ readonly Email: unique symbol }, string> {}
 interface ParsedPassword extends Newtype<{ readonly ParsedPassword: unique symbol }, string> {}
+interface HashedPassword extends Newtype<{ readonly HashedPassword: unique symbol }, string> {}
 
 export type ParsedUser = {
-  id?: string,
-  username: Username,
-  email: Email,
+  id?: string
+  username: Username
+  email: Email
   password: ParsedPassword
 }
 
-export type User = { id: string } & ParsedUser
+export type User = Modify<ParsedUser, {
+  id: string
+  password: HashedPassword
+}>
 
 export type UnparsedUser = {
-  username: string,
-  email: string,
+  id?: string
+  username: string
+  email: string
   password: string
 }
 
@@ -49,3 +56,10 @@ export const parseUser = (uP: UnparsedUser): Either<string, ParsedUser> => {
   
   return right(user)
 }
+
+export const justParse = (uP: UnparsedUser): User => ({
+  id: <string>uP.id,
+  username: iso<Username>().wrap(uP.username),
+  email: iso<Email>().wrap(uP.email),
+  password: iso<HashedPassword>().wrap(uP.password)
+})

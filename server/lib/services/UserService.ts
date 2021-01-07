@@ -1,22 +1,22 @@
-import { map, Either } from 'fp-ts/lib/Either'
+import * as E from 'fp-ts/lib/Either'
+import * as IO from 'fp-ts/lib/IO'
 import { flow, pipe } from 'fp-ts/lib/function'
 import { parseUser, User, ParsedUser, UnparsedUser } from '../domain/User'
 import { generateId, generatePasswordHash } from './Utils'
+import { sequenceS } from 'fp-ts/lib/Apply'
 import * as US from '../repositories/sql/UserRepository'
 
-const addIdToUser = (user: ParsedUser): Either<string, ParsedUser> => ({
-  id: '10',
-  ...user
-})
+const merge = <A>(x: A) => (y: object): A => ({ ...x, ...y })
 
-export const addUser: (user: UnparsedUser) => Either<string, User> = flow(
-  parseUser,
-  map(addIdToUser),
-  map(hashUserPassword),
-  
+const addIdToUser: (user: ParsedUser) => IO.IO<ParsedUser> = flow(
+  merge,
+  IO.of,
+  IO.ap(sequenceS(IO.io)({ id: generateId() }))
 )
-
 // get controller user
 // convert to parsed user (validate username, email, password)
 // convert to domain (add id and hashed password)
 
+// merge (user) (Either<string, { id: }>)
+// lift them all
+// merge (Right<User>).apply(sequence)

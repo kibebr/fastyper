@@ -7,12 +7,10 @@ import { HttpRequest } from './Types'
 
 type HttpResponse = {
   code: number
-  body: string
+  body: string | object
 }
 
-const prop = <O extends HttpRequest, P extends keyof O>(
-  path: P
-) => (obj: O): O[P] => obj[path]
+const prop = <O extends HttpRequest, P extends keyof O>(path: P) => (obj: O): O[P] => obj[path]
 
 export const getUser: (req: HttpRequest) => HttpResponse = pipe(
   prop('params'),
