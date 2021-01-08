@@ -1,4 +1,4 @@
-import { map, chain, right, Either } from 'fp-ts/lib/Either'
+import { map, chain, right, fromPredicate, Either } from 'fp-ts/lib/Either'
 import { flow } from 'fp-ts/lib/function'
 import { iso, Newtype } from 'newtype-ts'
 import { isMinLength, isMaxLength, strHas, isAlphanumeric } from '../utils/String'
@@ -9,6 +9,15 @@ interface Username extends Newtype<{ readonly Username: unique symbol }, string>
 interface Email extends Newtype<{ readonly Email: unique symbol }, string> {}
 interface ParsedPassword extends Newtype<{ readonly ParsedPassword: unique symbol }, string> {}
 interface HashedPassword extends Newtype<{ readonly HashedPassword: unique symbol }, string> {}
+
+enum UserDomainError {
+  UsernameTooShort,
+  UsernameTooLong,
+  UsernameNotAlphanumeric,
+  EmailTooShort,
+  PasswordTooShort,
+  EmailDoesntIncludeAt,
+}
 
 export type ParsedUser = {
   id?: string
@@ -29,25 +38,43 @@ export type UnparsedUser = {
   password: string
 }
 
-const createUsername: (username: string) => Either<string, Username> = flow(
-  isMinLength(3),
-  chain(isMaxLength(10)),
-  chain(isAlphanumeric),
+const createUsername: (username: string) => Either<UserDomainError, Username> = flow(
+  fromPredicate(
+    isMinLength(3),
+    () => UserDomainError.UsernameTooShort
+  ),
+  chain(fromPredicate(
+    isMaxLength(12),
+    () => UserDomainError.UsernameTooLong
+  )),
+  chain(fromPredicate(
+    isAlphanumeric,
+    () => UserDomainError.UsernameNotAlphanumeric
+  )),
   map(iso<Username>().wrap)
 )
 
-const createEmail: (email: string) => Either<string, Email> = flow(
-  isMinLength(1),
-  chain(strHas('@')),
+const createEmail: (email: string) => Either<UserDomainError, Email> = flow(
+  fromPredicate(
+    isMinLength(1),
+    () => UserDomainError.EmailTooShort
+  ),
+  chain(fromPredicate(
+    strHas('@'),
+    () => UserDomainError.EmailDoesntIncludeAt
+  )),
   map(iso<Email>().wrap)
 )
 
-const createParsedPassword: (password: string) => Either<string, ParsedPassword> = flow(
-  isMinLength(6),
+const createParsedPassword: (password: string) => Either<UserDomainError, ParsedPassword> = flow(
+  fromPredicate(
+    isMinLength(6),
+    () => UserDomainError.PasswordTooShort
+  ),
   map(iso<ParsedPassword>().wrap)
 )
 
-export const parseUser = (uP: UnparsedUser): Either<string, ParsedUser> => {
+export const parseUser = (uP: UnparsedUser): Either<UserDomainError, ParsedUser> => {
   const user: ParsedUser = {
     username: iso<Username>().wrap('username'),
     email: iso<Email>().wrap('mail@mail.com'),
@@ -57,9 +84,6 @@ export const parseUser = (uP: UnparsedUser): Either<string, ParsedUser> => {
   return right(user)
 }
 
-export const justParse = (uP: UnparsedUser): User => ({
-  id: <string>uP.id,
-  username: iso<Username>().wrap(uP.username),
-  email: iso<Email>().wrap(uP.email),
-  password: iso<HashedPassword>().wrap(uP.password)
-})
+// TODO make validation easier
+// List of [Error, Predicate]
+// transform each into an Either

@@ -6,17 +6,10 @@ import { generateId, generatePasswordHash } from './Utils'
 import { sequenceS } from 'fp-ts/lib/Apply'
 import * as US from '../repositories/sql/UserRepository'
 
-const merge = <A>(x: A) => (y: object): A => ({ ...x, ...y })
+const addIdToUser = (u: ParsedUser): ParsedUser => ({ id: generateId(), ...u })
 
-const addIdToUser: (user: ParsedUser) => IO.IO<ParsedUser> = flow(
-  merge,
-  IO.of,
-  IO.ap(sequenceS(IO.io)({ id: generateId() }))
+export const addUser: (uP: UnparsedUser) => E.Either<string, User> = flow(
+  parseUser,
+  E.map(addIdToUser),
+
 )
-// get controller user
-// convert to parsed user (validate username, email, password)
-// convert to domain (add id and hashed password)
-
-// merge (user) (Either<string, { id: }>)
-// lift them all
-// merge (Right<User>).apply(sequence)
