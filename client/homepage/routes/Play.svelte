@@ -1,6 +1,6 @@
 <script>
   import { createCanvas, createCanvasRenderer } from '../utils/Canvas.js'
-  import { createState } from '../../game/main.js' 
+  import { createGame } from '../../game/main.js' 
   import { fetchWordsFrom } from '../utils/fetcher.js'
   import { onMount } from 'svelte' 
 
@@ -16,19 +16,14 @@
   }
 
   const canvas = createCanvas({
-    width: document.body.clientWidth,
+    width: document.body.clientWidth - 50,
     height: document.body.clientHeight
   })
-
   const renderer = createCanvasRenderer(canvas)
-  const state = createState({ 
-    width: canvas.width,
-    height: canvas.height,
-    callbacks: {
-      onDestroy: onWordDestroyed,
-      onOver: onGameOver
-    }
-  })
+  const game = createGame({
+    onOver: onGameOver,
+    onWordDestroyed
+  }, [canvas.width, canvas.height])
 
   let container
   let prompt = ''
@@ -36,30 +31,21 @@
 
   onMount(async () => {
     const fetchedWords = await fetchWordsFrom('10')
-    fetchedWords.forEach(state.addWord)
-
+    fetchedWords.forEach(game.addWord)
     const gameLoop = () => {
-      state.update()
-
+      game.update()
       renderer.clearCanvas()
       renderer.paintAll('black')
-
-      state.getWords().forEach(renderer.renderWord)
-
       renderer.renderStars()
-
+      game.getWordObjs().forEach(renderer.renderWordObj)
       window.requestAnimationFrame(gameLoop)
     }
   
     container.appendChild(canvas)
-    state.startTimer()
     gameLoop()
   })
 
-  $: {
-    state.setPrompt(prompt)
-  }
-
+  $: game.changePrompt(prompt)
 </script>
 
 <style>

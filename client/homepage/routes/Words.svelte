@@ -1,7 +1,7 @@
 <script>
   import { push } from 'svelte-spa-router'
   import { slide } from 'svelte/transition'
-  import { getRandomNumFromRange } from '../../game/utils.js'
+  import { getRandomNumFromRange } from '../../utils.js'
   import { onMount } from 'svelte'
 
   let filter = ''

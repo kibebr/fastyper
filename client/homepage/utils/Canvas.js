@@ -21,8 +21,8 @@ export const renderWord = word => canvas => {
   ctx.font = 'normal 16px VT323'
   ctx.fillText(
     word.word,
-    word.position.x,
-    word.position.y
+    word.pos[0],
+    word.pos[1]
   )  
 }
 
@@ -44,13 +44,13 @@ export const createCanvasRenderer = canvas => {
     clearCanvas: () =>  {
       ctx.clearRect(0, 0, canvas.width, canvas.height)
     },
-    renderWord: word => {
+    renderWordObj: wordObj => {
       ctx.fillStyle = 'white'
       ctx.font = '20px VT323'
       ctx.fillText(
-        word.word,
-        word.position.x,
-        word.position.y + 100
+        wordObj.name,
+        wordObj.pos[0],
+        wordObj.pos[1]
       )  
     },
     renderStars: () => {
