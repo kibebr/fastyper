@@ -1,7 +1,7 @@
 <script>
   import { createCanvas, createCanvasRenderer } from '../utils/Canvas.js'
   import { createGame } from '../../game/main.js' 
-  import { fetchWordsFrom } from '../utils/fetcher.js'
+  import { fetchWordNode } from '../services/WordService.js'
   import { onMount } from 'svelte' 
 
   export let params
@@ -30,8 +30,8 @@
   let gameState = 'RUNNING'
 
   onMount(async () => {
-    const fetchedWords = await fetchWordsFrom('10')
-    fetchedWords.forEach(game.addWord)
+    const wordNode = await fetchWordNode(params.id)
+    wordNode.words.forEach(game.addWord)
     const gameLoop = () => {
       game.update()
       renderer.clearCanvas()

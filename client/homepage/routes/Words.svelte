@@ -3,23 +3,11 @@
   import { slide } from 'svelte/transition'
   import { getRandomNumFromRange } from '../../utils.js'
   import { onMount } from 'svelte'
+  import { fetchWordNodes } from '../services/WordService.js'
 
   let filter = ''
-
-  const wordsList = [
-    {
-      id: '19',
-      difficulty: 'easy',
-      title: 'English 1',
-      preview: ['banana', 'test', 'coco', 'brand', 'new', 'man', 'i', 'saw', 'the', 'light', 'baptized', 'headlights', 'stared', 'down', 'coast', 'police', 'rahleigh', 'baby', 'tonight', 'rock', 'mama']
-    },
-    {
-      id: '20',
-      difficulty: 'hard',
-      title: 'English 2',
-      preview: ['english', 'math', 'science', 'flow', 'pipe', 'coco', 'xixi', 'ground', 'skatepark', 'skate', 'hey', 'momma', 'me', 'wind', 'and', 'rain', 'southbound', 'train', 'coast']
-    }
-  ]
+  let wordNodes = null
+  let errorMessage = undefined
 
   const getDifficultyColor = diff => {
     switch (diff) {
@@ -30,11 +18,12 @@
     }
   }
 
-  onMount(() => {
-    const words = document.querySelectorAll('.word')
+  onMount(async () => {
+    wordNodes = await fetchWordNodes()
+    const movingWords = document.querySelectorAll('.word')
 
     const loop = () => {
-      words.forEach(word => {
+      movingWords.forEach(word => {
         const newLeft = parseFloat(word.style.left) + 0.3
 
         word.style.left = `${newLeft}px`
@@ -46,8 +35,6 @@
 
       window.requestAnimationFrame(loop)
     }
-
-    loop()
   })
 
 </script>
@@ -142,25 +129,28 @@
     <h1>/words</h1>
     <input placeholder='Search...' bind:value={filter} />
   </div>
-
-  <div id='word-list'>
-    {#each wordsList as wordList}
-      <div class='words-card' in:slide='{{ duration: 300 }}' on:click={() => push(`/play/${wordList.id}`)} style='visibility: visible'>
-        <div class='words-background'>
-          {#each wordList.preview as word}
-            <span class='word' style='left: {getRandomNumFromRange(0, 400)}; top: {getRandomNumFromRange(0, 480)}'>
-              {word}
-            </span>
-          {/each}
+  {#if wordNodes}
+    <div id='word-list'>
+      {#each wordNodes as wordNode}
+        <div class='words-card' in:slide='{{ duration: 300 }}' on:click={() => push(`/play/${wordNode.id}`)} style='visibility: visible'>
+          <div class='words-background'>
+            {#each wordNode.words as word}
+              <span class='word' style='left: {getRandomNumFromRange(0, 400)}; top: {getRandomNumFromRange(0, 480)}'>
+                {word}
+              </span>
+            {/each}
+          </div>
+          <span class='words-difficulty' style='color: {getDifficultyColor(wordNode.difficulty)}'>
+            {wordNode.difficulty.toUpperCase()}
+          </span>
+          <div class='words-info'>
+            <h2 class='words-title'>{wordNode.title}</h2>
+            <span>Times played: 0</span>
+          </div>
         </div>
-        <span class='words-difficulty' style='color: {getDifficultyColor(wordList.difficulty)}'>
-          {wordList.difficulty.toUpperCase()}
-        </span>
-        <div class='words-info'>
-          <h2 class='words-title'>{wordList.title}</h2>
-          <span>Times played: 0</span>
-        </div>
-      </div>
-    {/each}
-  </div>
+      {/each}
+    </div>
+  {:else}
+    <div>Loading...</div>
+  {/if}
 </section>
