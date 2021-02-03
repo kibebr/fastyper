@@ -19,8 +19,6 @@
 </script>
 
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
-
   :global(html, body) {
     margin: 0;
     margin-left: 25px;
@@ -37,6 +35,7 @@
     color: black;
     font-size: 1.1em;
     background-color: white;
+    border-bottom: 5px solid grey !important;
     cursor: pointer;
   }
 

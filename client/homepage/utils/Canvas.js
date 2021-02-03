@@ -15,17 +15,6 @@ export const paintAll = color => canvas => {
   ctx.fillRect(0, 0, canvas.width, canvas.height)
 }
 
-export const renderWord = word => canvas => {
-  const ctx = canvas.getContext('2d')
-  ctx.fillStyle = 'white'
-  ctx.font = 'normal 16px VT323'
-  ctx.fillText(
-    word.word,
-    word.pos[0],
-    word.pos[1]
-  )  
-}
-
 export const createCanvasRenderer = canvas => {
   const ctx = canvas.getContext('2d')
   const stars = new Array(500)
@@ -45,7 +34,12 @@ export const createCanvasRenderer = canvas => {
       ctx.clearRect(0, 0, canvas.width, canvas.height)
     },
     renderWordObj: wordObj => {
-      ctx.fillStyle = 'white'
+      if (wordObj.tag === 'BOMB') {
+        ctx.fillStyle = 'red'
+      } else {
+        const x = (wordObj.pos[0] / canvas.width) * 256
+        ctx.fillStyle = `rgb(256, ${300 - x}, ${300 - (x * 1.3)})`
+      }
       ctx.font = '20px VT323'
       ctx.fillText(
         wordObj.name,

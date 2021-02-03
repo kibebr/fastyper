@@ -1,6 +1,6 @@
 <script>
   import { createCanvas, createCanvasRenderer } from '../utils/Canvas.js'
-  import { createGame } from '../../game/main.js' 
+  import { createGame } from '../../domain/game.js' 
   import { fetchWordNode } from '../services/WordService.js'
   import { onMount } from 'svelte' 
 

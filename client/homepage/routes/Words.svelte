@@ -2,7 +2,7 @@
   import { push } from 'svelte-spa-router'
   import { slide } from 'svelte/transition'
   import { getRandomNumFromRange } from '../../utils.js'
-  import { onMount } from 'svelte'
+  import { onMount, tick } from 'svelte'
   import { fetchWordNodes } from '../services/WordService.js'
 
   let filter = ''
@@ -20,6 +20,9 @@
 
   onMount(async () => {
     wordNodes = await fetchWordNodes()
+
+    await tick()
+
     const movingWords = document.querySelectorAll('.word')
 
     const loop = () => {
@@ -35,6 +38,8 @@
 
       window.requestAnimationFrame(loop)
     }
+    
+    loop()
   })
 
 </script>
@@ -59,8 +64,8 @@
   .words-card {
     display: inline-block;
     position: relative;
-    width: 400px;
-    height: 500px;
+    width: 300px;
+    height: 300px;
     color: white;
     cursor: pointer;
     overflow: hidden;
@@ -89,7 +94,7 @@
     bottom: 0;
     width: 100%;
     height: 100px;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.9);
     padding-left: 15px;
   }
 
@@ -99,7 +104,7 @@
   }
 
   .words-info>span {
-    font-size: 16px;
+    font-size: 18px;
   }
 
   .word {
@@ -135,7 +140,7 @@
         <div class='words-card' in:slide='{{ duration: 300 }}' on:click={() => push(`/play/${wordNode.id}`)} style='visibility: visible'>
           <div class='words-background'>
             {#each wordNode.words as word}
-              <span class='word' style='left: {getRandomNumFromRange(0, 400)}; top: {getRandomNumFromRange(0, 480)}'>
+              <span class='word' style='left: {getRandomNumFromRange(0, 300)}; top: {getRandomNumFromRange(0, 280)}'>
                 {word}
               </span>
             {/each}
