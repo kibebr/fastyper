@@ -4,10 +4,12 @@
   import { fetchWordNode } from '../services/WordService.js'
   import { onMount } from 'svelte' 
 
+  let wpm = 102
   export let params
 
   const onWordDestroyed = word => {
     console.log('play received destroyed ', word)
+    renderer.addDestroyedScore(word, 40)
     prompt = ''
   }
 
@@ -37,6 +39,9 @@
       renderer.clearCanvas()
       renderer.paintAll('black')
       renderer.renderStars()
+      renderer.renderWPM(wpm)
+      renderer.renderScore(100)
+      renderer.renderDestroyedScores()
       game.getWordObjs().forEach(renderer.renderWordObj)
       window.requestAnimationFrame(gameLoop)
     }
@@ -59,7 +64,7 @@
     left: 50%;
     transform: translate(-50%, -50%);
     text-align: center;
-    font-size: 1.5em;
+    font-size: 1.6em;
     z-index: 1;
     background-color: transparent;
     color: white;

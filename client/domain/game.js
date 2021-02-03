@@ -1,7 +1,7 @@
 import { getRandomNumFromRange } from '../utils.js'
 
 export const createGame = (callbacks, boundaries) => {
-  let speed = 5
+  let speed = 1
   const wordObjs = []
 
   const createWordObj = name => {
@@ -31,11 +31,16 @@ export const createGame = (callbacks, boundaries) => {
     },
     addWord: word => wordObjs.push(createWordObj(word)),
     changePrompt: p => {
-      const badWord = wordObjs.findIndex(w => w.name === p)
+      const index = wordObjs.findIndex(w => w.name === p)
       
-      if (badWord !== -1) {
-        callbacks.onWordDestroyed(wordObjs[badWord])
-        wordObjs.splice(badWord, 1)
+      if (index !== -1) {
+        if (wordObjs[index].tag === 'NORMAL') {
+          callbacks.onWordDestroyed(wordObjs[index])
+          wordObjs.splice(index, 1)
+        }
+        else {
+          callbacks.onOver()
+        }
       }
     },
     getWordObjs: () => wordObjs
