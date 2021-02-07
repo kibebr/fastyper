@@ -4,12 +4,16 @@
   import { fetchWordNode } from '../services/WordService.js'
   import { onMount } from 'svelte' 
 
-  let wpm = 102
+  let seconds = 0
+  let minutes = 0
+  let characters = 0
+  let wpm = 0
+
   export let params
 
   const onWordDestroyed = word => {
-    console.log('play received destroyed ', word)
     renderer.addDestroyedScore(word, 40)
+    characters += word.name.length
     prompt = ''
   }
 
@@ -34,6 +38,7 @@
   onMount(async () => {
     const wordNode = await fetchWordNode(params.id)
     wordNode.words.forEach(game.addWord)
+
     const gameLoop = () => {
       game.update()
       renderer.clearCanvas()
@@ -42,15 +47,22 @@
       renderer.renderWPM(wpm)
       renderer.renderScore(100)
       renderer.renderDestroyedScores()
+      renderer.renderSeconds(seconds)
       game.getWordObjs().forEach(renderer.renderWordObj)
       window.requestAnimationFrame(gameLoop)
     }
   
     container.appendChild(canvas)
     gameLoop()
+
+    setInterval(() => {
+      seconds += 1
+    }, 1000)
   })
 
   $: game.changePrompt(prompt)
+  $: minutes = seconds / 60
+  $: wpm = (characters / 5) / minutes | 0
 </script>
 
 <style>

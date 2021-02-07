@@ -60,6 +60,10 @@ export const createCanvasRenderer = canvas => {
       ctx.fillStyle = '#00ff80'
       ctx.fillText(`SCORE: ${score}`, canvas.width - 100, 100)
     },
+    renderSeconds: seconds => {
+      ctx.fillStyle = 'white'
+      ctx.fillText(`${seconds}`, canvas.width - 200, 100)
+    },
     renderDestroyedScores: () => {
       ctx.fillStyle = '#00ff80'
       ctx.font = '22px VT323'
