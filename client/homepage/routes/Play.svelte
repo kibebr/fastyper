@@ -4,13 +4,14 @@
   import { fetchWordNode } from '../services/WordService.js'
   import { onMount } from 'svelte' 
 
+  export let params
+
   let seconds = 0
   let minutes = 0
   let characters = 0
   let score = 0
   let wpm = 0
-
-  export let params
+  let timer = null
 
   const onWordDestroyed = word => {
     const _score = word.name.length * 2
@@ -22,6 +23,7 @@
 
   const onGameOver = () => {
     console.log('game over')
+    clearInterval(timer)
   }
 
   const canvas = createCanvas({
@@ -60,7 +62,7 @@
     container.appendChild(canvas)
     gameLoop()
 
-    setInterval(() => {
+    timer = setInterval(() => {
       seconds += 1
     }, 1000)
   })
