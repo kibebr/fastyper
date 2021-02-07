@@ -11,7 +11,12 @@
   let characters = 0
   let score = 0
   let wpm = 0
+
   let timer = null
+  let container
+  let prompt = ''
+  let isGameRunning = true
+  let inputElement
 
   const onWordDestroyed = word => {
     const _score = word.name.length * 2
@@ -22,7 +27,8 @@
   }
 
   const onGameOver = () => {
-    console.log('game over')
+    isGameRunning = false
+    prompt = 'GAME OVER'
     clearInterval(timer)
   }
 
@@ -35,10 +41,6 @@
     onOver: onGameOver,
     onWordDestroyed
   }, [canvas.width, canvas.height])
-
-  let container
-  let prompt = ''
-  let gameState = 'RUNNING'
 
   onMount(async () => {
     const wordNode = await fetchWordNode(params.id)
@@ -56,7 +58,9 @@
       renderer.renderSeconds(seconds)
       game.getWordObjs().forEach(renderer.renderWordObj)
 
-      window.requestAnimationFrame(gameLoop)
+      if (isGameRunning) {
+        window.requestAnimationFrame(gameLoop)
+      }
     }
   
     container.appendChild(canvas)
@@ -70,6 +74,13 @@
   $: game.changePrompt(prompt)
   $: minutes = seconds / 60
   $: wpm = (characters / 5) / minutes | 0
+  $: {
+    console.log(isGameRunning)
+    if (!isGameRunning) {
+      prompt = 'GAME OVER'
+      console.log('test')
+    }
+  }
 </script>
 
 <style>
@@ -83,7 +94,7 @@
     left: 50%;
     transform: translate(-50%, -50%);
     text-align: center;
-    font-size: 1.6em;
+    font-size: 1.8em;
     z-index: 1;
     background-color: transparent;
     color: white;
@@ -98,10 +109,13 @@
 </div> 
 <!-- warn-disable a11y-missing-attribute -->
 <input 
-     placeholder={gameState ? 'TYPE' : 'OVER'} 
+     placeholder={isGameRunning ? 'TYPE' : 'GAME OVER'} 
      autofocus 
      spellcheck=false
+     disabled={!isGameRunning}
+     style='color: {isGameRunning ? 'white' : 'red'}'
      bind:value={prompt} 
      on:blur={({ target }) => target.focus()}
      on:paste={event => event.preventDefault()}
+     bind:this={inputElement}
 />
