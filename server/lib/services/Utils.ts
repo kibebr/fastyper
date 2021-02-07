@@ -2,6 +2,7 @@ import { IO } from 'fp-ts/lib/IO'
 import { Task } from 'fp-ts/lib/Task'
 import { hash } from 'bcrypt'
 import { v4 as uuid } from 'uuid'
+import { decode, verify } from 'jsonwebtoken'
 
 const makeError = (err: unknown): Error => new Error(`${err}`)
 

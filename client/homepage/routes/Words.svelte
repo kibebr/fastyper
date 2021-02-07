@@ -57,7 +57,8 @@
 
   #word-list {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-column-gap: 1px;
     padding: 20px;
   }
 
