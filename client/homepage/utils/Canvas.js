@@ -54,15 +54,15 @@ export const createCanvasRenderer = canvas => {
     renderWPM: wpm => {
       ctx.fillStyle = 'white'
       ctx.font = '32px VT323'
-      ctx.fillText(`WPM: ${wpm}`, canvas.width - 100, 50)
+      ctx.fillText(`WPM: ${wpm}`, canvas.width - 200, 50)
     },
     renderScore: score => {
       ctx.fillStyle = '#00ff80'
-      ctx.fillText(`SCORE: ${score}`, canvas.width - 100, 100)
+      ctx.fillText(`SCORE: ${score}`, canvas.width - 200, 100)
     },
     renderSeconds: seconds => {
       ctx.fillStyle = 'white'
-      ctx.fillText(`${seconds}`, canvas.width - 200, 100)
+      ctx.fillText(`${seconds}`, canvas.width / 2, 100)
     },
     renderDestroyedScores: () => {
       ctx.fillStyle = '#00ff80'
@@ -70,11 +70,12 @@ export const createCanvasRenderer = canvas => {
 
       destroyedScores.forEach(ds => {
         ctx.fillText(`+${ds[1]}`, ds[0].pos[0], ds[0].pos[1])
+        ds[0].pos[1] -= 2
       })
     },
     addDestroyedScore: (word, score) => {
       setTimeout
-      destroyedScores.push([word, score])
+      destroyedScores.push([{ pos: [word.pos[0], word.pos[1]] }, score])
     }
   }
 }

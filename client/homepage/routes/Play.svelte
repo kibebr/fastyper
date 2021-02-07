@@ -7,13 +7,16 @@
   let seconds = 0
   let minutes = 0
   let characters = 0
+  let score = 0
   let wpm = 0
 
   export let params
 
   const onWordDestroyed = word => {
-    renderer.addDestroyedScore(word, 40)
+    const _score = word.name.length * 2
+    renderer.addDestroyedScore(word, _score)
     characters += word.name.length
+    score += _score
     prompt = ''
   }
 
@@ -41,14 +44,16 @@
 
     const gameLoop = () => {
       game.update()
+
       renderer.clearCanvas()
       renderer.paintAll('black')
       renderer.renderStars()
       renderer.renderWPM(wpm)
-      renderer.renderScore(100)
+      renderer.renderScore(score)
       renderer.renderDestroyedScores()
       renderer.renderSeconds(seconds)
       game.getWordObjs().forEach(renderer.renderWordObj)
+
       window.requestAnimationFrame(gameLoop)
     }
   
