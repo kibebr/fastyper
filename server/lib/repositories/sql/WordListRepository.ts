@@ -12,8 +12,8 @@ import { db } from './main'
 export const selectWordListByIdCommand = sql<ISelectWordListByIdCommandQuery>`SELECT * FROM word_lists WHERE id = $id`;
 export const selectWordListById = (id: string): Task<ISelectWordListByIdCommandResult[]> => () => selectWordListByIdCommand.run({ id }, db)
 
-export const queryById = (id: string): Task<Option<Either<WordListDomainError, WordList>>> => pipe(
-  selectWordListById('10'),
+export const queryById: (id: string) => Task<Option<Either<WordListDomainError, WordList>>> = flow(
+  selectWordListById,
   tmap(flow(
     head,
     omap(parseWordList)
