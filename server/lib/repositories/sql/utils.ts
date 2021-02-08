@@ -1,7 +1,7 @@
 import { QueryResult, QueryResultRow } from 'pg'
 import { flow } from 'fp-ts/function'
 import { map, Task } from 'fp-ts/Task'
-import { Option } from 'fp-ts/Option
+import { Option } from 'fp-ts/Option'
 import { head } from 'fp-ts/Array'
 import { db } from './main'
 

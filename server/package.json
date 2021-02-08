@@ -11,6 +11,8 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@pgtyped/cli": "^0.10.1",
+    "@pgtyped/query": "^0.10.1",
     "@types/bcrypt": "^3.0.0",
     "@types/jsonwebtoken": "^8.5.0",
     "@types/node": "^14.14.19",

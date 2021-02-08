@@ -1,0 +1,13 @@
+{
+  "transforms": [
+    {
+      "mode": "ts",
+      "include": "repositories/sql/*.ts",
+      "emitTemplate": "{{dir}}/{{name}}.types.ts"
+    }
+  ],
+  "srcDir": "./lib/",
+  "failOnError": false,
+  "camelCaseColumnNames": false,
+  "dbUrl": "postgres://postgres:geral00@localhost/fastyper-dev"
+}

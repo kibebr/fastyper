@@ -6,7 +6,7 @@ import { sequenceS } from 'fp-ts/lib/Apply'
 
 interface Title extends Newtype<{ readonly Title: unique symbol }, string> {}
 
-enum WordListDomainError {
+export enum WordListDomainError {
   TitleTooShort,
   TitleTooLong
 }
@@ -28,22 +28,25 @@ const parseTitle: (t: string) => Either<WordListDomainError, Title> = flow(
   map(iso<Title>().wrap)
 )
 
-type WordList = {
+export type WordList = {
   id: string,
   title: Title,
-  difficulty: Difficulty
+  difficulty: Difficulty,
+  words: string[]
 }
 
-type UnparsedWordList = {
+export type UnparsedWordList = {
   id: string,
   title: string,
-  difficulty: string
+  difficulty: string,
+  words: string[]
 }
 
-export const parseWordList = (uW: UnparsedWordList): Either<WordListDomainError, WordList> => sequenceS(Applicative)({
+export const parseWordList = (uW: any): Either<WordListDomainError, WordList> => sequenceS(Applicative)({
   id: right(uW.id),
   title: parseTitle(uW.title),
-  difficulty: right(<Difficulty>'Hard') 
+  difficulty: right(<Difficulty>'Hard'),
+  words: right(['not good'])
 })
 
 // function semigroup steps:
