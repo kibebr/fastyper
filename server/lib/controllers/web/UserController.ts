@@ -1,42 +1,33 @@
 import { Either } from 'fp-ts/lib/Either'
 import { map as tmap, Task } from 'fp-ts/lib/Task'
 import { chain, fold, map as omap, fromNullable, Option } from 'fp-ts/lib/Option'
-import { flow, pipe } from 'fp-ts/lib/function'
+import { flow, pipe, Lazy } from 'fp-ts/lib/function'
 import { parseUser, User, ParsedUser  } from '../../domain/User'
-import { findByUsername } from '../../repositories/sql/UserRepository'
+import { queryByUsername } from '../../repositories/sql/UserRepository'
 import { HttpRequest } from './Types'
 import { Modify } from '../../utils/Types'
+import { foldW } from '../../utils/Utils'
 
-type UserRegisterBody = {
-  username: string,
-  email: string,
-  password: string
+enum HttpStatusCode {
+  OK = 200,
+  NOT_FOUND = 404
 }
 
-type UserGetBody = {
-  username: string
+type GetByUsernameReq = {
+  query: {
+    username: string
+  }
 }
 
-type HttpResponse = {
-  code: number,
-  body: object | string
+type HttpResponse<T> = {
+  code: HttpStatusCode,
+  body: T
 }
 
-type HttpRequestGetUser = Modify<HttpRequest, {
-  params: { username: string }
-}>
-
-const prop = <O extends Record<string, unknown>, P extends keyof O>(
-  path: P
-) => (obj: O): O[P] => obj[path]
-
-const getUsername = (req: HttpRequestGetUser): string => req.params.username
-
-export const getUser: (req: HttpRequestGetUser) => Task<HttpResponse> = flow(
-  getUsername,
-  findByUsername,
-  tmap(fold(
-    () => ({ code: 404, body: 'a' }),
-    (user) => ({ code: 200, body: 'a' })
+export const getByUsername = (req: GetByUsernameReq): Task<HttpResponse<ParsedUser | string>> => pipe(
+  queryByUsername(req.query.username),
+  tmap(foldW(
+    () => ({ code: 404, body: 'User not found.' }),
+    (user) => ({ code: 200, body: user })
   ))
 )

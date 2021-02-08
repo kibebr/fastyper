@@ -1,23 +1,21 @@
-import fastify, { FastifyInstance } from 'fastify'
-import { Server, IncomingMessage, ServerResponse } from 'http'
-import dotenv from 'dotenv'
+import Koa from 'koa'
+import Router from 'koa-router'
+import { Parser, Route, Response, URL, route } from 'typera-koa'
+import * as t from 'io-ts'
 
-dotenv.config()
+const app = new Koa()
+const router = new Router()
 
-const server: FastifyInstance<
-  Server,
-  IncomingMessage,
-  ServerResponse
-> = fastify()
+router.get('/users/:username', async (ctx, next) => {
+  ctx.status = 200
+  ctx.body = { msg: 'test' }
+  console.log(ctx.params)
 
-const start = async () => {
-  try {
-    await server.listen(process.env.PORT as string, '0.0.0.0')
-  } catch (err) {
-    console.error(err)
-    server.log.error(err)
-    process.exit(1)
-  }
-}
+  await next()
+})
 
-start()
+app.use(router.routes())
+
+app.listen(3002, () => {
+  console.log('Started!')
+})
