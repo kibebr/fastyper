@@ -80,7 +80,7 @@ export const parseUser = (uP: UnparsedUser): Either<UserDomainError, ParsedUser>
   email: parseEmail(uP.email)
 })
 
-export const parseUserNoVal = (uP: UnparsedUser): ParsedUser => ({
+export const parseUserNoVal = (uP: any): ParsedUser => ({
   username: iso<Username>().wrap(uP.username),
   email: iso<Email>().wrap(uP.email)
 })

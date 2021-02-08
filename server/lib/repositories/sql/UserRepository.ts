@@ -5,14 +5,19 @@ import { flow, pipe } from 'fp-ts/lib/function'
 import { parseUserNoVal, User, UnparsedUser, ParsedUser } from '../../domain/User'
 import { QueryResult, QueryResultRow } from 'pg'
 import { getRows, query, queryFirst } from './utils'
+import { sql } from '@pgtyped/query'
+import { ISelectUserByUsernameCommandQuery, ISelectUserByUsernameCommandResult } from './UserRepository.types'
 import { db } from './main'
 
-const rowToUnparsedUser = (row: QueryResultRow) => <UnparsedUser>row
+const selectUserByUsernameCommand = 
+  sql<ISelectUserByUsernameCommandQuery>`SELECT * FROM users WHERE username = $u LIMIT 1`
+const selectUserByUsername = (u: string): Task<ISelectUserByUsernameCommandResult[]> => () =>
+  selectUserByUsernameCommand.run({ u }, db)
 
-export const findByUsername = (u: string): Task<Option<ParsedUser>> => pipe(
-  queryFirst('SELECT username bla bla'),
-  tmap(omap(flow(
-    rowToUnparsedUser, 
-    parseUserNoVal
-  )))
+export const queryByUsername: (u: string) => Task<Option<ParsedUser>> = flow(
+  selectUserByUsername,
+  tmap(flow(
+    head,
+    omap(parseUserNoVal)
+  ))
 )
