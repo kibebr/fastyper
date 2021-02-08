@@ -1,7 +1,8 @@
-import { map, chain, fromPredicate, Either } from 'fp-ts/Either'
+import { map, chain, right, fromPredicate, Either, Applicative } from 'fp-ts/Either'
 import { flow } from 'fp-ts/function'
 import { Newtype, iso } from 'newtype-ts'
 import { isMaxLength, isMinLength } from '../utils/String'
+import { sequenceS } from 'fp-ts/lib/Apply'
 
 interface Title extends Newtype<{ readonly Title: unique symbol }, string> {}
 
@@ -28,9 +29,22 @@ const parseTitle: (t: string) => Either<WordListDomainError, Title> = flow(
 )
 
 type WordList = {
+  id: string,
   title: Title,
   difficulty: Difficulty
 }
+
+type UnparsedWordList = {
+  id: string,
+  title: string,
+  difficulty: string
+}
+
+export const parseWordList = (uW: UnparsedWordList): Either<WordListDomainError, WordList> => sequenceS(Applicative)({
+  id: right(uW.id),
+  title: parseTitle(uW.title),
+  difficulty: right(<Difficulty>'Hard') 
+})
 
 // function semigroup steps:
 // isLengthOkay = semigroupPredicate.concat(isMinLength(3), isMinLength(10))
