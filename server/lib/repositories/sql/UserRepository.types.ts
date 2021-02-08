@@ -17,3 +17,18 @@ export interface ISelectUserByUsernameCommandQuery {
   result: ISelectUserByUsernameCommandResult;
 }
 
+/** 'SelectAllUsersCommand' parameters type */
+export type ISelectAllUsersCommandParams = void;
+
+/** 'SelectAllUsersCommand' return type */
+export interface ISelectAllUsersCommandResult {
+  id: string | null;
+  username: string | null;
+}
+
+/** 'SelectAllUsersCommand' query type */
+export interface ISelectAllUsersCommandQuery {
+  params: ISelectAllUsersCommandParams;
+  result: ISelectAllUsersCommandResult;
+}
+
