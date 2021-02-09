@@ -7,6 +7,7 @@ import { queryAll, queryByUsername } from '../../repositories/sql/UserRepository
 import { foldW } from '../../utils/Utils'
 import { ok, HttpStatusCode, HttpResponse, HttpRequest } from './Controller'
 import { type, string, Validation } from 'io-ts'
+import { prop } from 'fp-ts-ramda'
 
 const getByUsernameV = type({
   params: type({
@@ -21,10 +22,13 @@ export const getAll: () => Task<HttpResponse<ParsedUser[]>> = flow(
 
 export const getByUsername: (req: HttpRequest) => Validation<Task<HttpResponse<ParsedUser | string>>> = flow(
   getByUsernameV.decode,
-  emap(x => queryByUsername('test')),
-  emap(tmap(foldW(
-    () => ({ code: 404, body: 'User not found.' }),
-    ok
+  emap(flow(
+    prop('params'), 
+    prop('username'),
+    queryByUsername,
+    tmap(foldW(
+      () => ({ code: 404, body: 'User not found.' }),
+      ok
+    ))
   ))
-  )
 )

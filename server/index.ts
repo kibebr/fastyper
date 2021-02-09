@@ -10,11 +10,22 @@ import { getByUsername, getAll } from './lib/controllers/web/UserController'
 const app = new Koa()
 const router = new Router()
 
-router.get('/users/:username', async (ctx, next) => {
-  ctx.status = 200
-  ctx.body = { msg: 'test' }
+router.get('/users', async (ctx, next) => {
   const answer = await getAll()()
-  console.log(answer)
+
+  ctx.status = answer.code
+  ctx.body = answer.body
+
+  await next()
+})
+
+router.get('/users/:username', async (ctx, next) => {
+  const answer = await getByUsername({ params: ctx.params })
+
+  console.log(answer.toString())
+
+  ctx.status = 200
+  ctx.body = { hello: 'world' }
 
   await next()
 })
