@@ -6,6 +6,7 @@
 
   export let params
 
+  let wave = 1
   let seconds = 0
   let minutes = 0
   let characters = 0
@@ -19,10 +20,10 @@
   let inputElement
 
   const onWordDestroyed = word => {
-    const _score = word.name.length * 2
-    renderer.addDestroyedScore(word, _score)
+    const points = word.name.length * 2
+    renderer.addDestroyedScore(word, points)
     characters += word.name.length
-    score += _score
+    score += points
     prompt = ''
   }
 

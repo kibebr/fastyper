@@ -11,7 +11,7 @@ module.exports = merge(common, {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: './homepage/template.html'
+      template: './web/template.html'
     })
   ],
   module: {

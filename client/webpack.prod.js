@@ -43,7 +43,7 @@ module.exports = merge(common, {
       new CssMinimizerPlugin(),
       new TerserPlugin(),
       new HtmlWebpackPlugin({
-        template: './homepage/template.html',
+        template: './web/template.html',
         minify: {
           removeAttributes: true,
           removeComments: true,
