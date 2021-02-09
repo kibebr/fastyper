@@ -27,6 +27,10 @@ export const createGame = (callbacks, boundaries) => {
     update: () => {
       wordObjs.forEach(wordObj => {
         wordObj.pos[0] += (boundaries[0] / 2000) * speed
+
+        if (wordObj.tag === 'BOMB' && wordObj.pos[0] > boundaries[0]) {
+          callbacks.onOver()
+        }
       })
     },
     addWord: word => wordObjs.push(createWordObj(word)),
