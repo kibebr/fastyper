@@ -1,6 +1,0 @@
-{
-  "plugins": [
-    ["@babel/plugin-proposal-pipeline-operator", { "proposal": "fsharp" }],
-    "@babel/plugin-proposal-class-properties"
-  ]
-}
