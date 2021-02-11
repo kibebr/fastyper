@@ -14,4 +14,5 @@ export type HttpRequest = {
   params?: unknown
 }
 
+export const notFound = (msg: string): HttpResponse<string> => ({ code: 404, body: msg })
 export const ok = <A>(body: A): HttpResponse<A> => ({ code: 200, body })

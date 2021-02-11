@@ -20,18 +20,21 @@ enum UserDomainError {
 }
 
 export type ParsedUser = {
+  id: string
   username: Username
-  email: Email
+  email: Email,
+  password: ParsedPassword
 }
 
 export type User = Modify<ParsedUser, {
-  id: string,
-  password: string
+  scores: string[]
 }>
 
 export type UnparsedUser = {
-  username: string
-  email: string
+  id: string,
+  username: string,
+  email: string,
+  password: string
 }
 
 const eqUser: Eq<User> = {
@@ -75,14 +78,18 @@ export const parsePassword: (password: string) => Either<UserDomainError, Parsed
 )
 
 // TODO use spec
-export const parseUser = (uP: UnparsedUser): Either<UserDomainError, ParsedUser> => sequenceS(Applicative)({
-  username: parseUsername(uP.username),
-  email: parseEmail(uP.email)
+export const parseUser = (u: UnparsedUser): Either<UserDomainError, ParsedUser> => sequenceS(Applicative)({
+  id: right(u.id),
+  username: parseUsername(u.username),
+  email: parseEmail(u.email),
+  password: parsePassword(u.password)
 })
 
 export const parseUserNoVal = (uP: any): ParsedUser => ({
+  id: uP.id,
   username: iso<Username>().wrap(uP.username),
-  email: iso<Email>().wrap(uP.email)
+  email: iso<Email>().wrap(uP.email),
+  password: iso<ParsedPassword>().wrap(uP.password)
 })
 
 // TODO make validation easier
