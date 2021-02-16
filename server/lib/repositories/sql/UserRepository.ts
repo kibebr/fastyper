@@ -3,7 +3,6 @@ import { map as tmap, Task } from 'fp-ts/lib/Task'
 import { head, map as amap } from 'fp-ts/Array'
 import { flow, pipe } from 'fp-ts/lib/function'
 import { parseUserNoVal, User, UnparsedUser, ParsedUser } from '../../domain/User'
-import { getRows, query, queryFirst } from './utils'
 import { sql } from '@pgtyped/query'
 import { 
   ISelectUserByUsernameCommandQuery, 

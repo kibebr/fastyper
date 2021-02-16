@@ -1,4 +1,3 @@
-import { queryFirst } from './utils'
 import { map as omap, Option } from 'fp-ts/Option'
 import { map as tmap, Task } from 'fp-ts/Task'
 import { map as amap, head, sequence } from 'fp-ts/Array'
