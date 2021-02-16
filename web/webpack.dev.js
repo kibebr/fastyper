@@ -31,5 +31,8 @@ module.exports = merge(common, {
         'css-loader'
       ]
     }]
+  },
+  devServer: {
+    disableHostCheck: true
   }
 })

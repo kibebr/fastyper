@@ -76,6 +76,7 @@
   {#if matches}
     <MobileNavbar />
   {:else}
+    <Navbar />
   {/if}
 </MediaQuery>
 <Router {routes} />

@@ -2,31 +2,28 @@
   import { onMount, tick } from 'svelte'
   import { push } from 'svelte-spa-router'
   import { fade } from 'svelte/transition'
-  import { renderStars, renderWord, paintAll, getRandomNumFromRange } from '../utils/Canvas.js'
+  import { renderStars, renderWord, paintAll } from '../utils/Canvas.js'
+  import { fetchHomepageWordList } from '../services/WordService.js'
+  import { getRandomNumFromRange } from '../../common/getRandomNumFromRange.js'
+  import { createWordObj } from '../../common/createWordObj.js'
 
   const width = document.body.clientWidth
   const height = document.body.clientHeight
-  const stars = new Array(100)
-  const words = [
-    {
-      tag: 'NORMAL',
-      pos: [getRandomNumFromRange(0, width), getRandomNumFromRange(0, height)],
-      name: 'test'
-    },
-    {
-      tag: 'NORMAL',
-      pos: [getRandomNumFromRange(0, width), getRandomNumFromRange(0, height)],
-      name: 'hello'
-    }
-  ]
+  const stars = new Array(200)
+  const wordObjCreator = createWordObj([width, height])(() => 1)
 
   let canvas
+  let words
 
   onMount(async () => {
+    words = await fetchHomepageWordList()
+    words = words.split('\n').map(wordObjCreator)
+
     await tick()
 
     setInterval(() => {
-
+      const lastIndex = words.length - 1
+      words.splice(-1, 1)
     }, 1000)
 
     for (let i = 0, len = stars.length; i < len; ++i) {
@@ -40,18 +37,17 @@
       paintAll('black')(canvas)
       renderStars(stars)(canvas)
 
-      for (let i = 0, len = stars.length; i < len; ++i) {
-        stars[i][0] += 1
-
-        if (stars[i][0] > width) {
-          stars[i][0] = 0
+      stars.forEach(star => {
+        star[0] += 0.5
+        if (star[0] > width) {
+          star[0] = 0
         }
-      }
-
-      words.forEach(word => {
-        renderWord(word)(canvas)
-        word.pos[0] += 1
       })
+
+      for (let len = words.length - 1, i = len; i > len - 20; --i) {
+        renderWord(words[i])(canvas)
+        words[i].pos[0] += 0.5
+      }
 
       window.requestAnimationFrame(loop)
     }
@@ -67,21 +63,22 @@
   }
 
   h1 {
-    font-style: italic;
+    font-size: clamp(40px, 80px, 120px);
+    font-weight: normal;
   }
 
   p {
     transform: translateX(5px);
     margin-top: 2px;
-    font-size: 24px;
+    font-size: clamp(15px, 4.8vw, 25px);
+    color: black;
   }
 
   .t {
     margin: 0;
-    font-size: 90;
     letter-spacing: .10em;
-    text-shadow: 2px 2px 1px #ff00ff;
-    color: #ff0a3b;
+    /* text-shadow: 2px 2px 1px grey; */
+    color: black;
   }
 
   #title-caret {
@@ -90,10 +87,14 @@
   }
 
   #info {
+    box-sizing: border-box;
     position: absolute;
     bottom: 0;
     left: 30px;
+    padding: 25px;
+    background-color: white;
   }
+
 </style>
 
 <section in:fade='{{ duration: 100 }}'>

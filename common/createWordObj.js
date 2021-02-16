@@ -1,3 +1,5 @@
+import { getRandomNumFromRange } from './getRandomNumFromRange.js'
+
 export const createWordObj = boundaries => probFn => name => ({
   name,
   pos: [

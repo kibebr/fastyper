@@ -13,7 +13,7 @@ export const renderStars = stars => canvas => {
   const ctx = canvas.getContext('2d')
   ctx.fillStyle = 'white'
   for (let i = 0, len = stars.length; i < len; ++i) {
-    ctx.fillRect(stars[i][0], stars[i][1], 1, 1)
+    ctx.fillRect(stars[i][0], stars[i][1], 2, 2)
   }
 }
 
