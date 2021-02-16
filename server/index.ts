@@ -1,11 +1,13 @@
 import Koa from 'koa'
 import Router from 'koa-router'
+import dotenv from 'dotenv'
 import { fold, map as emap, isRight } from 'fp-ts/Either'
 import { map as tmap } from 'fp-ts/Task'
 import { identity, pipe } from 'fp-ts/function'
 import { getAll } from './lib/controllers/web/UserController'
 import { getAll as getAllWordLists, getById } from './lib/controllers/web/WordListController'
 
+dotenv.config()
 const app = new Koa()
 const router = new Router()
 
@@ -46,6 +48,6 @@ router.get('/wordlists/:id', async (ctx, next) => {
 
 app.use(router.routes())
 
-app.listen(3002, () => {
+app.listen(process.env.PORT, () => {
   console.log('Started!')
 })
