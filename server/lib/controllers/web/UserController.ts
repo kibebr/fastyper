@@ -22,27 +22,3 @@ export const getAll: () => Task<HttpResponse<ParsedUser[]>> = flow(
   queryAll,
   tmap(ok)
 )
-
-export const getByUsername: (req: HttpRequest) => TaskEither<Errors, HttpResponse<ParsedUser | string>> = flow(
-  getByUsernameV.decode,
-  fromEither,
-  temap(flow(
-    getUsernameFromParam,
-    queryByUsername,
-    tmap(fold<ParsedUser, HttpResponse<ParsedUser | string>>(
-      () => notFound('User not found.'),
-      ok
-    )),
-    fromTask
-  )),
-)
-
-  /* emap(flow( */
-  /*   prop('params'), */ 
-  /*   prop('username'), */
-  /*   queryByUsername, */
-  /*   tmap(foldW( */
-  /*     () => ({ code: 404, body: 'User not found.' }), */
-  /*     ok */
-  /*   )) */
-  /* )), */
