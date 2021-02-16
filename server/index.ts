@@ -13,7 +13,7 @@ const app = new Koa()
 const router = new Router()
 
 router.get('/users', async (ctx, next) => {
-  const { code, body } = await getAll()()
+  const { code, body } = await getAllUsers()()
 
   ctx.status = code
   ctx.body = body
