@@ -9,5 +9,11 @@
   "srcDir": "./lib/",
   "failOnError": false,
   "camelCaseColumnNames": false,
-  "dbUrl": "postgres://postgres:geral00@localhost/fastyper-dev"
+  "db": {
+    "dbName": "fastyper-dev",
+    "user": "postgres",
+    "password": "geral00",
+    "host": "localhost",
+    "port": 5432
+  }
 }

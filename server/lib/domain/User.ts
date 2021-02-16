@@ -10,7 +10,7 @@ interface Username extends Newtype<{ readonly Username: unique symbol }, string>
 interface Email extends Newtype<{ readonly Email: unique symbol }, string> {}
 interface ParsedPassword extends Newtype<{ readonly ParsedPassword: unique symbol }, string> {}
 
-enum UserDomainError {
+export enum UserDomainError {
   UsernameTooShort,
   UsernameTooLong,
   UsernameNotAlphanumeric,

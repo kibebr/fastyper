@@ -7,6 +7,8 @@ import { sql } from '@pgtyped/query'
 import { 
   ISelectUserByUsernameCommandQuery, 
   ISelectUserByUsernameCommandResult,
+  ISelectUserByEmailCommandQuery, 
+  ISelectUserByEmailCommandResult,
   ISelectAllUsersCommandQuery,
   ISelectAllUsersCommandResult
 } from './UserRepository.types'
@@ -16,6 +18,11 @@ const selectUserByUsernameCommand =
   sql<ISelectUserByUsernameCommandQuery>`SELECT * FROM users WHERE username = $u LIMIT 1`
 const selectUserByUsername = (u: string): Task<ISelectUserByUsernameCommandResult[]> => () =>
   selectUserByUsernameCommand.run({ u }, db)
+
+const selectUserByEmailCommand = 
+  sql<ISelectUserByEmailCommandQuery>`SELECT * FROM users WHERE email = $e LIMIT 1`
+const selectUserByEmail = (e: string): Task<ISelectUserByEmailCommandResult[]> => () =>
+  selectUserByEmailCommand.run({ e }, db)
 
 const selectAllUsersCommand = 
   sql<ISelectAllUsersCommandQuery>`SELECT * FROM users`
@@ -28,6 +35,14 @@ export const queryAll: () => Task<ParsedUser[]> = flow(
 
 export const queryByUsername: (u: string) => Task<Option<ParsedUser>> = flow(
   selectUserByUsername,
+  tmap(flow(
+    head,
+    omap(parseUserNoVal)
+  ))
+)
+
+export const queryByEmail: (e: string) => Task<Option<ParsedUser>> = flow(
+  selectUserByEmail,
   tmap(flow(
     head,
     omap(parseUserNoVal)
