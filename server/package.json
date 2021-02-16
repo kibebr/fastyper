@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "NODE_ENV=production ts-node index.ts",
     "start:test": "NODE_ENV=development ts-node index.ts",
-    "start:watch": "ts-node-dev index.ts",
+    "start:watch": "NODE_ENV=development ts-node-dev index.ts",
     "watch:types": "npx pgtyped -w -c pgtyped.json"
   },
   "keywords": [],

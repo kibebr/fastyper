@@ -6,6 +6,7 @@ import { map as tmap } from 'fp-ts/Task'
 import { identity, pipe } from 'fp-ts/function'
 import { getAll } from './lib/controllers/web/UserController'
 import { getAll as getAllWordLists, getById } from './lib/controllers/web/WordListController'
+import { getAll as getAllUsers, getByUsername } from './lib/controllers/web/UserController'
 
 dotenv.config()
 const app = new Koa()
@@ -21,9 +22,10 @@ router.get('/users', async (ctx, next) => {
 })
 
 router.get('/users/:username', async (ctx, next) => {
+  const { code, body } = await getByUsername(ctx.params.username)()
 
-  ctx.status = 200
-  ctx.body = { nada: 'a' }
+  ctx.status = code
+  ctx.body = body
 
   await next()
 })
