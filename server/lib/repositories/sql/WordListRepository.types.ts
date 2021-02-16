@@ -20,3 +20,20 @@ export interface ISelectWordListByIdCommandQuery {
   result: ISelectWordListByIdCommandResult;
 }
 
+/** 'SelectWordListAllCommand' parameters type */
+export type ISelectWordListAllCommandParams = void;
+
+/** 'SelectWordListAllCommand' return type */
+export interface ISelectWordListAllCommandResult {
+  id: string | null;
+  title: string | null;
+  difficulty: string | null;
+  words: stringArray | null;
+}
+
+/** 'SelectWordListAllCommand' query type */
+export interface ISelectWordListAllCommandQuery {
+  params: ISelectWordListAllCommandParams;
+  result: ISelectWordListAllCommandResult;
+}
+

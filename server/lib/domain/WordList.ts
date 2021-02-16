@@ -65,6 +65,14 @@ export const parseWordList = (uW: UnparsedWordList): Either<WordListDomainError,
   words: pipe(uW.words.map(parseWord), sequence(Applicative))
 })
 
+export const parseWordListNoVal = (uW: UnparsedWordList): WordList => ({
+  id: uW.id,
+  title: iso<Title>().wrap(uW.title),
+  difficulty: <Difficulty>uW.difficulty,
+  words: uW.words.map(iso<Word>().wrap)
+})
+
+
 // function semigroup steps:
 // isLengthOkay = semigroupPredicate.concat(isMinLength(3), isMinLength(10))
 // isLengthOkay is now (a), that (a) => S.concat(f(a), g(a)) where f = isMinLength(3) and g = isMinLength(10)
