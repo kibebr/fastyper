@@ -1,15 +1,19 @@
-import * as E from 'fp-ts/lib/Either'
-import * as IO from 'fp-ts/lib/IO'
-import { flow, pipe } from 'fp-ts/lib/function'
-import { parseUser, User, ParsedUser, UnparsedUser } from '../domain/User'
-import { generateId, generatePasswordHash } from './Utils'
-import { sequenceS } from 'fp-ts/lib/Apply'
-import * as US from '../repositories/sql/UserRepository'
+import { task, chain, map as tmap, Task } from 'fp-ts/Task'
+import { fold } from 'fp-ts/Monoid'
+import { getFirstMonoid, Option } from 'fp-ts/Option'
+import { right, Either } from 'fp-ts/Either'
+import { sequence } from 'fp-ts/Array'
+import { UnparsedUser, UserDomainError, ParsedUser } from '../domain/User'
+import { pipe, flow } from 'fp-ts/function'
+import { queryByUsername, queryByEmail } from '../repositories/sql/UserRepository'
 
-const addIdToUser = (u: ParsedUser): ParsedUser => ({ id: generateId(), ...u })
+export const userExists = (user: UnparsedUser): Task<Option<ParsedUser>> => pipe(
+  sequence(task)([queryByUsername(user.username), queryByEmail(user.email)]),
+  tmap(fold(getFirstMonoid())
+))
 
-export const addUser: (uP: UnparsedUser) => E.Either<string, User> = flow(
-  parseUser,
-  E.map(addIdToUser),
-
+export const addUser = (user: UnparsedUser): Task<Either<any, string>> => flow(
+  // TODO
 )
+
+// check if user already exists in the database
