@@ -5,8 +5,8 @@ import { isMaxLength, isMinLength } from '../utils/String'
 import { sequenceS } from 'fp-ts/lib/Apply'
 import { sequence } from 'fp-ts/Array'
 
-interface Title extends Newtype<{ readonly Title: unique symbol }, string> {}
-interface Word extends Newtype<{ readonly Word: unique symbol }, string> {}
+export interface Title extends Newtype<{ readonly Title: unique symbol }, string> {}
+export interface Word extends Newtype<{ readonly Word: unique symbol }, string> {}
 
 export enum WordListDomainError {
   TitleTooShort,
