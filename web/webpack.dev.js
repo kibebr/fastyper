@@ -2,6 +2,7 @@ const common = require('./webpack.common.js')
 const path = require('path')
 const { merge } = require('webpack-merge')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const sveltePreprocess = require('svelte-preprocess')
 
 module.exports = merge(common, {
   mode: 'development',
@@ -21,7 +22,7 @@ module.exports = merge(common, {
         loader: 'svelte-loader',
         options: {
           emitCss: false,
-          hotReload: true
+          hotReload: true,
         }
       }
     }, {
@@ -33,6 +34,7 @@ module.exports = merge(common, {
     }]
   },
   devServer: {
+    host: '0.0.0.0',
     disableHostCheck: true
   }
 })

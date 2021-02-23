@@ -1,9 +1,11 @@
 <script>
   import Router from 'svelte-spa-router'
   import { wrap } from 'svelte-spa-router/wrap'
+  import { location } from 'svelte-spa-router'
   import Home from './routes/Home.svelte'
   import Profile from './routes/Profile.svelte'
   import Words from './routes/Words.svelte'
+  import Auth from './routes/Auth.svelte'
   import Navbar from './components/Navbar.svelte'
   import MobileNavbar from './components/MobileNavbar.svelte'
   import MediaQuery from 'svelte-media-query'
@@ -12,69 +14,35 @@
     '/': Home,
     '/user/:username': Profile,
     '/play': Words,
+    '/auth': Auth,
     '/play/:id': wrap({
       asyncComponent: () => import('./routes/Play.svelte')
     }) 
   }
 </script>
 
-<style>
+<style global>
   :global(html, body) {
-    margin: 0;
-    background-color: #0A0A0A;
-    color: white;
     font-family: 'VT323';
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-
-  :global(button) {
-    position: relative;
-    padding: 10px;
-    color: black;
-    font-size: 1.1em;
-    background-color: white;
-    border-bottom: 5px solid grey !important;
-    cursor: pointer;
-  }
-
-  :global(h1) {
-    font-weight: normal;
-  }
-
-  :global(button:active) {
-    top: 2px;
-  }
-
-  :global(button, input) {
-    font-family: inherit;
-    outline: none;
-    border: 0;
   }
 
   :global(.blink) {
     animation: blink-anim 0.9s steps(2, start) infinite;
   }
 
-  :global(::selection) {
-    color: black;
-    background-color: yellow;
+  :global(.logo-text-shadow) {
+    text-shadow: 0.3vw 0.5vh 1px #ff00ff;
   }
 
   @keyframes -global-blink-anim {
-    to { visibility: hidden }
-  }
-
-  @media screen and (max-width: 500px) {
-    :global(html, body) {
-      margin-left: 0px !important;
+    to {
+      visibility: hidden;
     }
   }
 </style>
 
 <MediaQuery query='(max-width: 500px)' let:matches>
   {#if matches}
-    <MobileNavbar />
   {:else}
     <Navbar />
   {/if}

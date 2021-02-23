@@ -2,105 +2,44 @@
   import { onMount, tick } from 'svelte'
   import { push } from 'svelte-spa-router'
   import { fade } from 'svelte/transition'
-  import { renderStars, renderWord, paintAll } from '../utils/Canvas.js'
   import { fetchHomepageWordList } from '../services/WordService.js'
   import { getRandomNumFromRange } from '../../common/getRandomNumFromRange.js'
   import { createWordObj } from '../../common/createWordObj.js'
 
-  const width = document.body.clientWidth
-  const height = document.body.clientHeight
-  const stars = new Array(200)
-  const wordObjCreator = createWordObj([width, height])(() => 1)
-
-  let canvas
-  let words
-
-  onMount(async () => {
-    words = await fetchHomepageWordList()
-    words = words.split('\n').map(wordObjCreator)
-
-    await tick()
-
-    setInterval(() => {
-      const lastIndex = words.length - 1
-      words.splice(-1, 1)
-    }, 1000)
-
-    for (let i = 0, len = stars.length; i < len; ++i) {
-      stars[i] = [
-        getRandomNumFromRange(0, width),
-        getRandomNumFromRange(0, height)
-      ]
-    }
-
-    const loop = () => {
-      paintAll('black')(canvas)
-      renderStars(stars)(canvas)
-
-      stars.forEach(star => {
-        star[0] += 0.5
-        if (star[0] > width) {
-          star[0] = 0
-        }
-      })
-
-      for (let len = words.length - 1, i = len; i > len - 20; --i) {
-        renderWord(words[i])(canvas)
-        words[i].pos[0] += 0.5
-      }
-
-      window.requestAnimationFrame(loop)
-    }
-
-    loop()
-  })
-
 </script>
 
-<style>
-  section {
-    min-height: 100vh;
-  }
-
-  h1 {
-    font-size: clamp(40px, 80px, 120px);
-    font-weight: normal;
-  }
-
-  p {
-    transform: translateX(5px);
-    margin-top: 2px;
-    font-size: clamp(15px, 4.8vw, 25px);
-    color: black;
-  }
-
-  .t {
-    margin: 0;
-    letter-spacing: .10em;
-    /* text-shadow: 2px 2px 1px grey; */
-    color: black;
-  }
-
-  #title-caret {
-    position: absolute;
-    transform: translate(-10px, 10px);
-  }
-
-  #info {
-    box-sizing: border-box;
-    position: absolute;
-    bottom: 0;
-    left: 30px;
-    padding: 25px;
-    background-color: white;
-  }
-
-</style>
-
-<section in:fade='{{ duration: 100 }}'>
-  <canvas width={width} height={height} bind:this={canvas}></canvas>
-  <div id='info'>
-    <h1 class='t'>fastyper<span class='blink'>_</span></h1>
-    <p>An online-based typing speed-test game.</p>
+<section in:fade='{{ duration: 100 }}' class='p-5 text-center md:text-left md:p-10'>
+  <div class='h-full border-b-2 border-white border-dotted'>
+    <h1 class='text-6xl tracking-tight md:text-8xl text-logo-pink logo-text-shadow'>fastyper<span class='blink'>_</span></h1>
+    <p class='text-2xl md:text-3xl'>Community-based typing speed test game.</p>
+    <div class='flex flex-row flex-wrap flex-shrink-0 mt-5 bg-black justify-evenly'>
+      <div class='text-center'>
+        <div class='w-48 h-32 bg-red-200'>
+        </div>
+        <h3 class='text-2xl' on:click={() => push('/auth')}>
+          Fun, easy
+        </h3>
+      </div>
+      <div class='text-center'>
+        <div class='w-48 h-32 bg-red-200'>
+        </div>
+        <h3 class='text-2xl'>
+          Community-based
+        </h3>
+      </div>
+      <div class='text-center'>
+        <div class='w-48 h-32 bg-red-200'>
+        </div>
+        <h3 class='text-2xl'>
+          Ranking system
+        </h3>
+      </div>
+    </div>
   </div>
+</section>
+
+<section class='h-screen p-5 md:p-10'>
+  <h2 class='text-5xl'>
+    >>>> coming soon to...
+  </h2>
 </section>

@@ -1,51 +1,40 @@
 <script>
-  import { slide } from 'svelte/transition'
+  import { slide, fade } from 'svelte/transition'
   import { push, location } from 'svelte-spa-router'
-  import LoginModal from './LoginModal.svelte'
 
-  let isLoginModalOpen = false
+  let showTitle = false
+
+  document.addEventListener('scroll', (event) => {
+    console.log(window.scrollY)
+    showTitle = window.scrollY >= 200
+  })
 </script>
 
 <style>
-  nav {
-    position: fixed;
-    display: flex;
-    width: 100%;
-    padding: 20px;
-  }
-
-  #nav-left {
-    flex: 1;
-    display: flex;
-    justify-content: flex-start;
-  }
-
-  #nav-center {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-  }
-
-  #nav-right {
-    flex: 1;
-    display: flex;
-    justify-content: flex-end;
-  }
-
-  span {
-    font-size: 24px;
+  .text-shadow {
+    text-shadow: 1px 1px 1px #ff00ff;
   }
 </style>
 
-<nav>
-  <div id='nav-left'>
-    a
+<nav class='fixed flex flex-row items-center justify-between w-full px-10 bg-black h-14'>
+  <div>
+    {#if showTitle}
+      <a href='#/' transition:fade='{{ duration: 1000 }}'>
+        <h2 class='text-3xl italic tracking-tight text-logo-pink text-shadow'>fastyper<span class='blink'>_</span></h2>
+      </a>
+    {/if}
   </div>
 
-  <div id='nav-center'>
-  </div>
-
-  <div id='nav-right'>
-    <span>Log-in</span>
+  <div>
+    {#if $location !== '/play'}
+      <a href='#/play' class='mr-2 text-xl text-blue-400 border-b border-blue-400 hover:text-blue-500 hover:border-blue-500'>
+        Play
+      </a>
+    {/if}
+    {#if $location !== '/auth'}
+      <a href='#/auth' class='text-xl text-blue-400 border-b border-blue-400 hover:text-blue-500 hover:border-blue-500'>
+        Log-in
+      </a>
+    {/if}
   </div>
 </nav>
