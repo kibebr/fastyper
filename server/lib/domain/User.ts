@@ -86,7 +86,6 @@ export const addScore = (score: Score) => (user: ParsedUser) => pipe(
   })  
 )
 
-
 // TODO use spec
 export const parseUser = (u: UnparsedUser): Either<UserDomainError, ParsedUser> => sequenceS(Applicative)({
   id: right(u.id || ''),
