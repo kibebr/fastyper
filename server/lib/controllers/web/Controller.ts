@@ -14,5 +14,7 @@ export type HttpRequest = {
   params?: unknown
 }
 
+export const internalError = (): HttpResponse<string> => ({ code: 500, body: 'Internal error.' })
+export const badRequest = (): HttpResponse<string> => ({ code: 400, body: 'Bad Request. Missing or invalid parameters were used.' })
 export const notFound = (msg: string): HttpResponse<string> => ({ code: 404, body: msg })
 export const ok = <A>(body: A): HttpResponse<A> => ({ code: 200, body })

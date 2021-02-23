@@ -10,6 +10,7 @@ export interface ISelectUserByUsernameCommandResult {
   id: string | null;
   username: string | null;
   email: string | null;
+  password: string | null;
 }
 
 /** 'SelectUserByUsernameCommand' query type */
@@ -28,6 +29,7 @@ export interface ISelectUserByEmailCommandResult {
   id: string | null;
   username: string | null;
   email: string | null;
+  password: string | null;
 }
 
 /** 'SelectUserByEmailCommand' query type */
@@ -44,6 +46,7 @@ export interface ISelectAllUsersCommandResult {
   id: string | null;
   username: string | null;
   email: string | null;
+  password: string | null;
 }
 
 /** 'SelectAllUsersCommand' query type */
@@ -51,4 +54,10 @@ export interface ISelectAllUsersCommandQuery {
   params: ISelectAllUsersCommandParams;
   result: ISelectAllUsersCommandResult;
 }
+
+/** Query 'InsertUserCommand' is invalid, so its result is assigned type 'never' */
+export type IInsertUserCommandResult = never;
+
+/** Query 'InsertUserCommand' is invalid, so its parameters are assigned type 'never' */
+export type IInsertUserCommandParams = never;
 
