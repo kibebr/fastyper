@@ -1,26 +1,28 @@
-import { queryAll, queryById } from '../../repositories/sql/WordListRepository'
-import { ok, HttpRequest, HttpResponse } from './Controller'
+import * as E from 'fp-ts/Either'
+import * as O from 'fp-ts/Option'
+import * as TE from 'fp-ts/TaskEither'
+import * as T from 'fp-ts/Task'
+import { queryAll, queryById } from '../../repositories/sql/wordlist/WordListRepository'
+import { ok, HttpRequest, internalError, notFound, HttpResponse } from './Controller'
 import { WordList } from '../../domain/WordList'
-import { foldW as efoldW, Either } from 'fp-ts/Either'
-import { foldW as ofoldW } from 'fp-ts/Option'
 import { flow } from 'fp-ts/function'
 import { map as tmap, Task } from 'fp-ts/Task'
 
-export const getAll: () => Task<HttpResponse<string> | HttpResponse<WordList[]>> = flow(
+export const getAll: () => T.Task<HttpResponse<string> | HttpResponse<WordList[]>> = flow(
   queryAll,
-  tmap(efoldW(
-    () => ({ code: 500, body: 'Oops, there were some issues when trying to fetch the words!' }),
-    ok
-  ))
+  TE.foldW(
+    () => T.of({ code: 500, body: 'Internal error.' }),
+    (wordList) => T.of(ok(wordList))
+  )
 )
 
-export const getById: (id: string) => Task<HttpResponse<string> | HttpResponse<WordList>> = flow(
+export const getById: (id: string) => T.Task<HttpResponse<string> | HttpResponse<WordList>> = flow(
   queryById,
-  tmap(ofoldW(
-    () => ({ code: 404, body: 'WordList not found!' }),
-    efoldW(
-      () => ({ code: 500, body: 'There was an issue while parsing the WordList.' }),
-      ok
-    )
-  ))
+  TE.foldW(
+    () => T.of(internalError()),
+    (o) => T.of(O.foldW(
+      () => notFound('WordList not found.'),
+      (wl) => ok(wl as WordList)
+    )(o))
+  )
 )

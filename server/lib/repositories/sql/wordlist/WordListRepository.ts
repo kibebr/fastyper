@@ -28,13 +28,14 @@ export const queryAll: () => TE.TaskEither<Error | t.Errors, WordList[]> = flow(
   ))
 )
 
-export const queryById: (id: string) => TE.TaskEither<Error, O.Option<E.Either<t.Errors, WordList>>> = flow(
+export const queryById: (id: string) => TE.TaskEither<Error | t.Errors, O.Option<WordList>> = flow(
   selectWordListById,
-  TE.map(flow(
+  TE.chainEitherKW(flow(
     A.head,
     O.map(flow(
       UnparsedWordListV.decode,
       E.map(parseWordListNoVal)
-    ))
+    )),
+    O.sequence(E.Applicative)
   ))
 )

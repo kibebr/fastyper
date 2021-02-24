@@ -32,6 +32,7 @@
     "eslint-plugin-promise": "^4.3.1",
     "fp-ts": "^2.10.0-rc.1",
     "fp-ts-ramda": "^0.1.7",
+    "fp-ts-std": "^0.8.0",
     "io-ts": "^2.2.13",
     "jest": "^26.6.3",
     "jest-fp-ts": "0.0.1",
