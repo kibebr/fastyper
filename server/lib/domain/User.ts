@@ -2,11 +2,9 @@ import { Score } from './Score'
 import * as E from 'fp-ts/Either'
 import * as AP from 'fp-ts/Apply'
 import { average } from './Utils'
-import { Eq } from 'fp-ts/Eq'
 import { pipe, flow } from 'fp-ts/lib/function'
 import { iso, Newtype } from 'newtype-ts'
 import { isMinLength, isMaxLength, strHas, isAlphanumeric } from '../utils/String'
-import { Modify } from '../utils/Types'
 
 export interface Username extends Newtype<{ readonly Username: unique symbol }, string> {}
 export interface Email extends Newtype<{ readonly Email: unique symbol }, string> {}
@@ -36,15 +34,12 @@ export type ParsedUser = {
   scores: Score[]
 }
 
-export type User = Modify<ParsedUser, {
-  scores: string[]
-}>
-
 export type UnparsedUser = {
-  id?: string
+  id: string
   username: string
   email: string
   password: string
+  scores?: Score[]
 }
 
 const parseUsername: (username: string) => E.Either<UserDomainError, Username> = flow(
@@ -94,16 +89,18 @@ export const addScore = (score: Score) => (user: ParsedUser): ParsedUser => pipe
 )
 
 // TODO use spec
-export const parseUser = (u: UnparsedUser): Either<UserDomainError, ParsedUser> => AP.sequenceS(E.Applicative)({
-  id: E.right(u.id || ''),
+export const parseUser = (u: UnparsedUser): E.Either<UserDomainError, ParsedUser> => AP.sequenceS(E.Applicative)({
+  id: E.right(u.id ?? ''),
   username: parseUsername(u.username),
   email: parseEmail(u.email),
-  password: parsePassword(u.password)
+  password: parsePassword(u.password),
+  scores: E.right(u.scores ?? [] as Score[])
 })
 
 export const parseUserNoVal = (uP: any): ParsedUser => ({
   id: uP.id,
   username: iso<Username>().wrap(uP.username),
   email: iso<Email>().wrap(uP.email),
-  password: iso<ParsedPassword>().wrap(uP.password)
+  password: iso<ParsedPassword>().wrap(uP.password),
+  scores: uP.scores
 })
