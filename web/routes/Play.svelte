@@ -6,7 +6,7 @@
 
   export let params
 
-  let wave = 1
+  let wave = 0
   let seconds = 0
   let minutes = 0
   let characters = 0
@@ -18,6 +18,8 @@
   let prompt = ''
   let isGameRunning = true
   let inputElement
+
+  let wordList
 
   const onWordDestroyed = word => {
     const points = word.name.length * 2
@@ -44,8 +46,7 @@
   }, [canvas.width, canvas.height])
 
   onMount(async () => {
-    const wordNode = await fetchWordNode(params.id)
-    wordNode.words.forEach(game.addWord)
+    wordList = await fetchWordNode(params.id)
 
     const gameLoop = () => {
       game.update()
@@ -72,6 +73,14 @@
     }, 1000)
   })
 
+  $: {
+    if (wordList) {
+      wave
+      const wordsToPush = wordList.words.slice(wave * 10, wave + 1 * 20)
+      console.log(wordsToPush)
+      game.addWords(wordsToPush)
+    }
+  }
   $: game.changePrompt(prompt)
   $: minutes = seconds / 60
   $: wpm = (characters / 5) / minutes | 0
@@ -87,6 +96,7 @@
 <style>
   #canvas-container {
     position: absolute;
+    z-index: -1;
   }
 
   input {
@@ -99,6 +109,7 @@
     z-index: 1;
     background-color: transparent;
     color: white;
+    outline: none;
   }
 
   ::placeholder {
@@ -110,6 +121,7 @@
 </div> 
 <!-- warn-disable a11y-missing-attribute -->
 <input 
+     class='border-b-2 border-dotted'
      placeholder={isGameRunning ? 'TYPE' : 'GAME OVER'} 
      autofocus 
      spellcheck=false

@@ -4,9 +4,9 @@
 
   let showTitle = false
 
-  document.addEventListener('scroll', (event) => {
-    console.log(window.scrollY)
-    showTitle = window.scrollY >= 200
+  document.addEventListener('scroll', () => {
+    console.log('scroll')
+    showTitle = document.documentElement.scrollTop >= 200
   })
 </script>
 
@@ -18,7 +18,7 @@
 
 <nav class='fixed flex flex-row items-center justify-between w-full px-10 bg-black h-14'>
   <div>
-    {#if showTitle}
+    {#if $location === '/' ? showTitle : true}
       <a href='#/' transition:fade='{{ duration: 1000 }}'>
         <h2 class='text-3xl italic tracking-tight text-logo-pink text-shadow'>fastyper<span class='blink'>_</span></h2>
       </a>

@@ -41,10 +41,5 @@
   }
 </style>
 
-<MediaQuery query='(max-width: 500px)' let:matches>
-  {#if matches}
-  {:else}
-    <Navbar />
-  {/if}
-</MediaQuery>
+<Navbar />
 <Router {routes} />

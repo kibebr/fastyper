@@ -20,6 +20,8 @@
 
   onMount(async () => {
     wordNodes = await fetchWordNodes()
+    console.log(wordNodes)
+    wordNodes = wordNodes.map(wordNode => ({ ...wordNode, words: wordNode.words.slice(0, 20) }))
 
     await tick()
 

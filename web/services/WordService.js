@@ -12,19 +12,22 @@ const wordNodes = [
     words: ['test', 'testing', 'chain', 'reaction', 'break', 'my', 'stride', 'wagon', 'wheel', 'superfluous', 'nevermind', 'oh', 'xenophobic', 'row', 'boat', 'columns', 'column', 'right', 'position', 'of', 'attention', 'by', 'the', 'left', 'flank']
   }
 ]
-export const fetchWordNodes = (sort, filter) => Promise.resolve(wordNodes)
 
-export const fetchWordNode = (id) => Promise.resolve(wordNodes.find(w => w.id === id))
+export const fetchWordNodes = () => new Promise((resolve, reject) => {
+  const req = new XMLHttpRequest()
+  req.open('GET', 'http://localhost:3002/wordlists')
 
-export const fetchHomepageWordList = () => new Promise((resolve, reject) => {
-  const request = new XMLHttpRequest()
-  request.open('GET', 'https://raw.githubusercontent.com/first20hours/google-10000-english/master/google-10000-english-no-swears.txt')
-
-  request.onload = () => {
-    resolve(request.responseText)
+  req.onload = () => {
+    if (req.status >= 400 && req.status <= 500) {
+      reject(Error(JSON.parse(req.responseText)))
+    } else {
+      resolve(JSON.parse(req.responseText))
+    }
   }
 
-  request.onerror = () => reject(Error('not good'))
-
-  request.send()
+  req.send()
 })
+
+export const fetchWordNode = id => 
+  fetch(`http://localhost:3002/wordlists/${id}`)
+    .then(res => res.json())
