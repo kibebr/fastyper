@@ -50,14 +50,6 @@ export const getByUsername: (req: C.HttpRequest) => T.Task<C.HttpResponse<Parsed
 
 declare function addUser (u: UnparsedUser): TE.TaskEither<Error | ParsedUser | UserDomainError, unknown>
 
-const handleError = (err: Error | ParsedUser | UserDomainError): string => {
-  if (err instanceof Error) {
-    return 'Internal error!'
-  } else if(typeof err === ParsedUser) {
-
-  }
-}
-
 const userDomainErrorMsg = (err: UserDomainErrors): string =>
   TP.match(err)
     .exhaustive()
@@ -65,7 +57,7 @@ const userDomainErrorMsg = (err: UserDomainErrors): string =>
     .with('UsernameTooLong', constant('Username is too long!'))
     .with('UsernameTooShort', constant('Username is too short!'))
     .with('EmailTooShort', constant('Email is too short!'))
-    .with('EmailDoesntIncludeAt', constant('Email does not include "@".'))
+    .with('EmailDoesntInclude@', constant('Email does not include "@".'))
     .with('PasswordTooShort', constant('Password needs to have at least 3 characters.'))
     .run()
 
