@@ -23,6 +23,17 @@ const getByUsernameV = t.type({
   })
 })
 
+const userDomainErrorMsg = (err: UserDomainErrors): string =>
+  TP.match(err)
+    .exhaustive()
+    .with('UsernameNotAlphanumeric', constant('Username must be alphanumeric.'))
+    .with('UsernameTooLong', constant('Username is too long!'))
+    .with('UsernameTooShort', constant('Username is too short!'))
+    .with('EmailTooShort', constant('Email is too short!'))
+    .with('EmailDoesntInclude@', constant('Email does not include "@".'))
+    .with('PasswordTooShort', constant('Password needs to have at least 3 characters.'))
+    .run()
+
 export const getAll: () => T.Task<C.HttpResponse<string> | C.HttpResponse<ParsedUser[]>> = flow(
   queryAll,
   TE.foldW(
@@ -48,33 +59,23 @@ export const getByUsername: (req: C.HttpRequest) => T.Task<C.HttpResponse<Parsed
   )
 )
 
-declare function addUser (u: UnparsedUser): TE.TaskEither<Error | ParsedUser | UserDomainError, unknown>
 
-const userDomainErrorMsg = (err: UserDomainErrors): string =>
-  TP.match(err)
-    .exhaustive()
-    .with('UsernameNotAlphanumeric', constant('Username must be alphanumeric.'))
-    .with('UsernameTooLong', constant('Username is too long!'))
-    .with('UsernameTooShort', constant('Username is too short!'))
-    .with('EmailTooShort', constant('Email is too short!'))
-    .with('EmailDoesntInclude@', constant('Email does not include "@".'))
-    .with('PasswordTooShort', constant('Password needs to have at least 3 characters.'))
-    .run()
+// declare function addUser (u: UnparsedUser): TE.TaskEither<Error | ParsedUser | UserDomainError, unknown>
 
-export const postUser: (req: C.HttpRequest) => T.Task<C.HttpResponse<string>> = flow(
-  postUserV.decode,
-  TE.fromEither,
-  TE.chainW(flow(
-    prop('body'),
-    addUser
-  )),
-  TE.fold(
-    (err) => T.of(
-      TP.match(err)
-        .with({ tag: 'UserDomainError' }, flow(userDomainErrorMsg, C.forbidden))
-        .otherwise(C.internalError)
-    ),
-    constant(T.of(C.ok('User created!'))
-    )
-  )
-)
+// export const postUser: (req: C.HttpRequest) => T.Task<C.HttpResponse<string>> = flow(
+//   postUserV.decode,
+//   TE.fromEither,
+//   TE.chainW(flow(
+//     prop('body'),
+//     addUser
+//   )),
+//   TE.fold(
+//     (err) => T.of(
+//       TP.match(err)
+//         .with({ tag: 'UserDomainError' }, flow(userDomainErrorMsg, C.forbidden))
+//         .otherwise(C.internalError)
+//     ),
+//     constant(T.of(C.ok('User created!'))
+//     )
+//   )
+

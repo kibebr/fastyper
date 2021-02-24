@@ -1,5 +1,6 @@
 import Koa from 'koa'
 import Router from 'koa-router'
+import cors from '@koa/cors'
 import dotenv from 'dotenv'
 import { fold, map as emap, isRight } from 'fp-ts/Either'
 import { map as tmap } from 'fp-ts/Task'
@@ -49,6 +50,7 @@ router.get('/wordlists/:id', async (ctx, next) => {
 })
 
 app.use(router.routes())
+app.use(cors())
 
 app.listen(process.env.PORT, () => {
   console.log('Started!')

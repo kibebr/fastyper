@@ -16,7 +16,7 @@ export type UserDomainErrors
   | 'UsernameNotAlphanumeric'
   | 'EmailTooShort'
   | 'PasswordTooShort'
-  | 'EmailDoesntIncludeAt'
+  | 'EmailDoesntInclude@'
 
 export type UserDomainError
   = { tag: 'UserDomainError', reason: UserDomainErrors }
@@ -35,7 +35,7 @@ export type ParsedUser = {
 }
 
 export type UnparsedUser = {
-  id: string
+  id?: string
   username: string
   email: string
   password: string
@@ -65,7 +65,7 @@ const parseEmail: (email: string) => E.Either<UserDomainError, Email> = flow(
   ),
   E.chain(E.fromPredicate(
     strHas('@'),
-    () => createUserDomainError('EmailDoesntIncludeAt')
+    () => createUserDomainError('EmailDoesntInclude@')
   )),
   E.map(iso<Email>().wrap)
 )
