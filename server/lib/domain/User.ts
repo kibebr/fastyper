@@ -1,6 +1,6 @@
 import { Score } from './Score'
-import { map, chain, right, fromPredicate, Applicative, Either } from 'fp-ts/lib/Either'
-import { sequenceS } from 'fp-ts/lib/Apply'
+import * as E from 'fp-ts/Either'
+import * as AP from 'fp-ts/Apply'
 import { average } from './Utils'
 import { Eq } from 'fp-ts/Eq'
 import { pipe, flow } from 'fp-ts/lib/function'
@@ -12,20 +12,27 @@ export interface Username extends Newtype<{ readonly Username: unique symbol }, 
 export interface Email extends Newtype<{ readonly Email: unique symbol }, string> {}
 export interface ParsedPassword extends Newtype<{ readonly ParsedPassword: unique symbol }, string> {}
 
-export enum UserDomainError {
-  UsernameTooShort,
-  UsernameTooLong,
-  UsernameNotAlphanumeric,
-  EmailTooShort,
-  PasswordTooShort,
-  EmailDoesntIncludeAt,
-}
+export type UserDomainErrors
+  = 'UsernameTooShort'
+  | 'UsernameTooLong'
+  | 'UsernameNotAlphanumeric'
+  | 'EmailTooShort'
+  | 'PasswordTooShort'
+  | 'EmailDoesntIncludeAt'
+
+export type UserDomainError
+  = { tag: 'UserDomainError', reason: UserDomainErrors }
+
+const createUserDomainError = (reason: UserDomainErrors): UserDomainError => ({
+  tag: 'UserDomainError',
+  reason
+})
 
 export type ParsedUser = {
   id: string
   username: Username
-  email: Email,
-  password: ParsedPassword,
+  email: Email
+  password: ParsedPassword
   scores: Score[]
 }
 
@@ -34,61 +41,61 @@ export type User = Modify<ParsedUser, {
 }>
 
 export type UnparsedUser = {
-  id?: string,
-  username: string,
-  email: string,
+  id?: string
+  username: string
+  email: string
   password: string
 }
 
-const parseUsername: (username: string) => Either<UserDomainError, Username> = flow(
-  fromPredicate(
+const parseUsername: (username: string) => E.Either<UserDomainError, Username> = flow(
+  E.fromPredicate(
     isMinLength(3),
-    () => UserDomainError.UsernameTooShort
+    () => createUserDomainError('UsernameTooShort')
   ),
-  chain(fromPredicate(
+  E.chain(E.fromPredicate(
     isMaxLength(12),
-    () => UserDomainError.UsernameTooLong
+    () => createUserDomainError('UsernameTooLong')
   )),
-  chain(fromPredicate(
+  E.chain(E.fromPredicate(
     isAlphanumeric,
-    () => UserDomainError.UsernameNotAlphanumeric
+    () => createUserDomainError('UsernameNotAlphanumeric')
   )),
-  map(iso<Username>().wrap)
+  E.map(iso<Username>().wrap)
 )
 
-const parseEmail: (email: string) => Either<UserDomainError, Email> = flow(
-  fromPredicate(
+const parseEmail: (email: string) => E.Either<UserDomainError, Email> = flow(
+  E.fromPredicate(
     isMinLength(1),
-    () => UserDomainError.EmailTooShort
+    () => createUserDomainError('EmailTooShort')
   ),
-  chain(fromPredicate(
+  E.chain(E.fromPredicate(
     strHas('@'),
-    () => UserDomainError.EmailDoesntIncludeAt
+    () => createUserDomainError('EmailDoesntIncludeAt')
   )),
-  map(iso<Email>().wrap)
+  E.map(iso<Email>().wrap)
 )
 
-export const parsePassword: (password: string) => Either<UserDomainError, ParsedPassword> = flow(
-  fromPredicate(
+export const parsePassword: (password: string) => E.Either<UserDomainError, ParsedPassword> = flow(
+  E.fromPredicate(
     isMinLength(6),
-    () => UserDomainError.PasswordTooShort
+    () => createUserDomainError('PasswordTooShort')
   ),
-  map(iso<ParsedPassword>().wrap)
+  E.map(iso<ParsedPassword>().wrap)
 )
 
 // TODO use traverse + lens
-export const addScore = (score: Score) => (user: ParsedUser) => pipe(
+export const addScore = (score: Score) => (user: ParsedUser): ParsedUser => pipe(
   user.scores.concat(score),
   (x) => ({
     ...user,
     averageWpm: average(x.map(({ averageWpm }) => averageWpm)),
     scores: x
-  })  
+  })
 )
 
 // TODO use spec
-export const parseUser = (u: UnparsedUser): Either<UserDomainError, ParsedUser> => sequenceS(Applicative)({
-  id: right(u.id || ''),
+export const parseUser = (u: UnparsedUser): Either<UserDomainError, ParsedUser> => AP.sequenceS(E.Applicative)({
+  id: E.right(u.id || ''),
   username: parseUsername(u.username),
   email: parseEmail(u.email),
   password: parsePassword(u.password)
