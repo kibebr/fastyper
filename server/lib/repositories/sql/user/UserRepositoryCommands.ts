@@ -1,4 +1,4 @@
-import { Username, Email, ParsedPassword, ParsedUser } from '../../../domain/User'
+import { isoUsername, isoEmail, isoParsedPassword, ParsedUser } from '../../../domain/User'
 import { tryCatch, TaskEither } from 'fp-ts/TaskEither'
 import { toError } from 'fp-ts/Either'
 import { sql } from '@pgtyped/query'
@@ -12,7 +12,6 @@ import {
   IInsertUserCommandResult,
   IInsertUserCommandQuery
 } from './UserRepositoryCommands.types'
-import { iso } from 'newtype-ts'
 import { db } from '../main'
 
 const selectUserByUsernameCommand =
@@ -45,9 +44,9 @@ export const insertUser = (user: ParsedUser): TaskEither<Error, IInsertUserComma
   async () => await insertUserCommand.run({
     user: {
       ...user,
-      username: iso<Username>().unwrap(user.username),
-      email: iso<Email>().unwrap(user.email),
-      password: iso<ParsedPassword>().unwrap(user.password)
+      username: isoUsername.unwrap(user.username),
+      email: isoEmail.unwrap(user.email),
+      password: isoParsedPassword.unwrap(user.password)
     }
   }, db),
   toError
