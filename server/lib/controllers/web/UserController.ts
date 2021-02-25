@@ -4,7 +4,8 @@ import * as TE from 'fp-ts/TaskEither'
 import * as t from 'io-ts'
 import * as TP from 'ts-pattern'
 import * as C from './Controller'
-import { UserDomainError, UserDomainErrors, UnparsedUser, ParsedUser } from '../../domain/User'
+import { UserDomainError, UserDomainErrors, ParsedUser } from '../../domain/User'
+import { addUser, UserServiceError, UserServiceErrors } from '../../services/UserService'
 import { queryAll, queryByUsername } from '../../repositories/sql/user/UserRepository'
 import { constant, pipe, flow } from 'fp-ts/function'
 import { prop } from 'fp-ts-ramda'
@@ -31,7 +32,13 @@ const userDomainErrorMsg = (err: UserDomainErrors): string =>
     .with('UsernameTooShort', constant('Username is too short!'))
     .with('EmailTooShort', constant('Email is too short!'))
     .with('EmailDoesntInclude@', constant('Email does not include "@".'))
-    .with('PasswordTooShort', constant('Password needs to have at least 3 characters.'))
+    .with('PasswordTooShort', constant('Password needs to have at least 6 characters.'))
+    .run()
+
+const userServiceErrorMsg = (err: UserServiceErrors): string =>
+  TP.match(err)
+    .exhaustive()
+    .with('UserExists', constant('User with same username or email already exists.'))
     .run()
 
 export const getAll: () => T.Task<C.HttpResponse<string> | C.HttpResponse<ParsedUser[]>> = flow(
@@ -53,28 +60,26 @@ export const getByUsername: (req: C.HttpRequest) => T.Task<C.HttpResponse<Parsed
   TE.foldW(
     pipe(C.internalError(), T.of, constant),
     (o) => T.of(O.foldW(
-      constant(C.notFound('User')),
+      pipe('User not found!', C.notFound, constant),
       (user): C.HttpResponse<ParsedUser> => C.ok(user as ParsedUser)
     )(o))
   )
 )
 
-// declare function addUser (u: UnparsedUser): TE.TaskEither<Error | ParsedUser | UserDomainError, unknown>
-
-// export const postUser: (req: C.HttpRequest) => T.Task<C.HttpResponse<string>> = flow(
-//   postUserV.decode,
-//   TE.fromEither,
-//   TE.chainW(flow(
-//     prop('body'),
-//     addUser
-//   )),
-//   TE.fold(
-//     (err) => T.of(
-//       TP.match(err)
-//         .with({ tag: 'UserDomainError' }, flow(userDomainErrorMsg, C.forbidden))
-//         .otherwise(C.internalError)
-//     ),
-//     constant(T.of(C.ok('User created!'))
-//     )
-//   )
-
+export const postUser: (req: C.HttpRequest) => T.Task<C.HttpResponse<string>> = flow(
+  postUserV.decode,
+  TE.fromEither,
+  TE.chainW(flow(
+    prop('body'),
+    addUser
+  )),
+  TE.fold(
+    (err) => T.of(
+      TP.match(err)
+        .with({ tag: 'UserDomainError' }, flow(prop('reason'), userDomainErrorMsg, C.forbidden))
+        .with({ tag: 'UserServiceError' }, flow(prop('reason'), userServiceErrorMsg, C.forbidden))
+        .otherwise(C.internalError)
+    ),
+    pipe('User created!', C.ok, T.of, constant)
+  )
+)

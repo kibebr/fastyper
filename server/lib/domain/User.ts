@@ -2,7 +2,7 @@ import { Score } from './Score'
 import * as E from 'fp-ts/Either'
 import * as AP from 'fp-ts/Apply'
 import { average } from './Utils'
-import { pipe, flow } from 'fp-ts/lib/function'
+import { pipe, flow, not } from 'fp-ts/lib/function'
 import { iso, Newtype } from 'newtype-ts'
 import { isMinLength, isMaxLength, strHas, isAlphanumeric } from '../utils/String'
 
@@ -68,7 +68,7 @@ const parseEmail: (email: string) => E.Either<UserDomainError, Email> = flow(
     () => createUserDomainError('EmailTooShort')
   ),
   E.chain(E.fromPredicate(
-    strHas('@'),
+    not(strHas('@')),
     () => createUserDomainError('EmailDoesntInclude@')
   )),
   E.map(isoEmail.wrap)

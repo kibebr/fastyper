@@ -1,13 +1,10 @@
 import Koa from 'koa'
 import Router from 'koa-router'
 import cors from '@koa/cors'
+import bodyParser from 'koa-bodyparser'
 import dotenv from 'dotenv'
-import { fold, map as emap, isRight } from 'fp-ts/Either'
-import { map as tmap } from 'fp-ts/Task'
-import { identity, pipe } from 'fp-ts/function'
-import { getAll } from './lib/controllers/web/UserController'
 import { getAll as getAllWordLists, getById } from './lib/controllers/web/WordListController'
-import { getAll as getAllUsers, getByUsername } from './lib/controllers/web/UserController'
+import { getAll as getAllUsers, getByUsername, postUser } from './lib/controllers/web/UserController'
 
 dotenv.config()
 const app = new Koa()
@@ -23,11 +20,23 @@ router.get('/users', async (ctx, next) => {
 })
 
 router.get('/users/:username', async (ctx, next) => {
-  const { code, body } = await getByUsername(ctx.params.username)()
+  const { code, body } = await getByUsername(ctx)()
 
   ctx.status = code
   ctx.body = body
 
+  await next()
+})
+
+router.post('/users', bodyParser(), async (ctx, next) => {
+  ctx.body = ctx.request.body
+  console.log(ctx.body)
+  const { code, body } = await postUser(ctx)()
+
+  console.log(code, body)
+  ctx.status = code
+  ctx.body = body
+  
   await next()
 })
 
@@ -48,6 +57,7 @@ router.get('/wordlists/:id', async (ctx, next) => {
 
   await next()
 })
+
 
 app.use(router.routes())
 app.use(cors())
