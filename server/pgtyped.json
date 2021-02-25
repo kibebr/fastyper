@@ -2,7 +2,7 @@
   "transforms": [
     {
       "mode": "ts",
-      "include": "repositories/sql/*.ts",
+      "include": "repositories/sql/**/*.ts",
       "emitTemplate": "{{dir}}/{{name}}.types.ts"
     }
   ],

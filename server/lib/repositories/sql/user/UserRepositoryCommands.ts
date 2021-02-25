@@ -1,3 +1,4 @@
+import { Username, Email, ParsedPassword, ParsedUser } from '../../../domain/User'
 import { tryCatch, TaskEither } from 'fp-ts/TaskEither'
 import { toError } from 'fp-ts/Either'
 import { sql } from '@pgtyped/query'
@@ -7,8 +8,11 @@ import {
   ISelectUserByEmailCommandQuery,
   ISelectUserByEmailCommandResult,
   ISelectAllUsersCommandQuery,
-  ISelectAllUsersCommandResult
-} from './UserRepository.types'
+  ISelectAllUsersCommandResult,
+  IInsertUserCommandResult,
+  IInsertUserCommandQuery
+} from './UserRepositoryCommands.types'
+import { iso } from 'newtype-ts'
 import { db } from '../main'
 
 const selectUserByUsernameCommand =
@@ -31,5 +35,20 @@ const selectAllUsersCommand =
   sql<ISelectAllUsersCommandQuery>`SELECT * FROM users`
 export const selectAllUsers = (): TaskEither<Error, ISelectAllUsersCommandResult[]> => tryCatch(
   async () => await selectAllUsersCommand.run(undefined, db),
+  toError
+)
+
+const insertUserCommand =
+  sql<IInsertUserCommandQuery>`INSERT INTO users (id, username, email, password) VALUES $user(id, username, email, password)`
+
+export const insertUser = (user: ParsedUser): TaskEither<Error, IInsertUserCommandResult[]> => tryCatch(
+  async () => await insertUserCommand.run({
+    user: {
+      ...user,
+      username: iso<Username>().unwrap(user.username),
+      email: iso<Email>().unwrap(user.email),
+      password: iso<ParsedPassword>().unwrap(user.password)
+    }
+  }, db),
   toError
 )

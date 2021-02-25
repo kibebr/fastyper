@@ -1,4 +1,4 @@
-/** Types generated for queries found in "lib/repositories/sql/UserRepository.ts" */
+/** Types generated for queries found in "lib/repositories/sql/user/UserRepositoryCommands.ts" */
 
 /** 'SelectUserByUsernameCommand' parameters type */
 export interface ISelectUserByUsernameCommandParams {
@@ -55,9 +55,22 @@ export interface ISelectAllUsersCommandQuery {
   result: ISelectAllUsersCommandResult;
 }
 
-/** Query 'InsertUserCommand' is invalid, so its result is assigned type 'never' */
-export type IInsertUserCommandResult = never;
+/** 'InsertUserCommand' parameters type */
+export interface IInsertUserCommandParams {
+  user: {
+    id: string | null | void,
+    username: string | null | void,
+    email: string | null | void,
+    password: string | null | void
+  };
+}
 
-/** Query 'InsertUserCommand' is invalid, so its parameters are assigned type 'never' */
-export type IInsertUserCommandParams = never;
+/** 'InsertUserCommand' return type */
+export type IInsertUserCommandResult = void;
+
+/** 'InsertUserCommand' query type */
+export interface IInsertUserCommandQuery {
+  params: IInsertUserCommandParams;
+  result: IInsertUserCommandResult;
+}
 

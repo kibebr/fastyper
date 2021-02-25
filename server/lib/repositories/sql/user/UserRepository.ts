@@ -29,3 +29,7 @@ export const queryByEmail: (e: string) => TE.TaskEither<Error, O.Option<ParsedUs
     O.map(parseUserNoVal)
   ))
 )
+
+export const insertUser: (u: ParsedUser) => TE.TaskEither<Error, string> = flow(
+  insertUser,
+)
