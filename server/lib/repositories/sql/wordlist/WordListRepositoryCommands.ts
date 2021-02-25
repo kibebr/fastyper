@@ -5,7 +5,7 @@ import {
   ISelectWordListByIdCommandQuery,
   ISelectWordListAllCommandQuery,
   ISelectWordListAllCommandResult,
-} from './WordListRepository.types'
+} from './WordListRepositoryCommands.types'
 import { sql } from '@pgtyped/query'
 import { db } from '../main'
 
