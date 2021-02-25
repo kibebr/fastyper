@@ -37,8 +37,8 @@ const userDomainErrorMsg = (err: UserDomainErrors): string =>
 export const getAll: () => T.Task<C.HttpResponse<string> | C.HttpResponse<ParsedUser[]>> = flow(
   queryAll,
   TE.foldW(
-    constant(T.of(C.internalError())),
-    (user) => T.of(C.ok(user))
+    pipe(C.internalError(), T.of, constant),
+    flow(C.ok, T.of)
   )
 )
 
@@ -51,14 +51,13 @@ export const getByUsername: (req: C.HttpRequest) => T.Task<C.HttpResponse<Parsed
     queryByUsername
   )),
   TE.foldW(
-    constant(T.of(C.internalError())),
+    pipe(C.internalError(), T.of, constant),
     (o) => T.of(O.foldW(
       constant(C.notFound('User')),
       (user): C.HttpResponse<ParsedUser> => C.ok(user as ParsedUser)
     )(o))
   )
 )
-
 
 // declare function addUser (u: UnparsedUser): TE.TaskEither<Error | ParsedUser | UserDomainError, unknown>
 

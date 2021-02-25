@@ -1,28 +1,26 @@
-import * as E from 'fp-ts/Either'
 import * as O from 'fp-ts/Option'
 import * as TE from 'fp-ts/TaskEither'
 import * as T from 'fp-ts/Task'
+import * as C from './Controller'
 import { queryAll, queryById } from '../../repositories/sql/wordlist/WordListRepository'
-import { ok, HttpRequest, internalError, notFound, HttpResponse } from './Controller'
 import { WordList } from '../../domain/WordList'
-import { flow } from 'fp-ts/function'
-import { map as tmap, Task } from 'fp-ts/Task'
+import { pipe, flow, constant } from 'fp-ts/function'
 
-export const getAll: () => T.Task<HttpResponse<string> | HttpResponse<WordList[]>> = flow(
+export const getAll: () => T.Task<C.HttpResponse<string> | C.HttpResponse<WordList[]>> = flow(
   queryAll,
   TE.foldW(
-    () => T.of({ code: 500, body: 'Internal error.' }),
-    (wordList) => T.of(ok(wordList))
+    pipe(C.internalError(), T.of, constant),
+    flow(C.ok, T.of)
   )
 )
 
-export const getById: (id: string) => T.Task<HttpResponse<string> | HttpResponse<WordList>> = flow(
+export const getById: (id: string) => T.Task<C.HttpResponse<string> | C.HttpResponse<WordList>> = flow(
   queryById,
   TE.foldW(
-    () => T.of(internalError()),
+    pipe(C.internalError(), T.of, constant),
     (o) => T.of(O.foldW(
-      () => notFound('WordList not found.'),
-      (wl) => ok(wl as WordList)
+      pipe(C.notFound('WordList not found.'), constant),
+      (wl) => C.ok(wl as WordList)
     )(o))
   )
 )
