@@ -10,6 +10,10 @@ export interface Username extends Newtype<{ readonly Username: unique symbol }, 
 export interface Email extends Newtype<{ readonly Email: unique symbol }, string> {}
 export interface ParsedPassword extends Newtype<{ readonly ParsedPassword: unique symbol }, string> {}
 
+export const isoUsername = iso<Username>()
+export const isoEmail = iso<Email>()
+export const isoParsedPassword = iso<ParsedPassword>()
+
 export type UserDomainErrors
   = 'UsernameTooShort'
   | 'UsernameTooLong'
@@ -55,7 +59,7 @@ const parseUsername: (username: string) => E.Either<UserDomainError, Username> =
     isAlphanumeric,
     () => createUserDomainError('UsernameNotAlphanumeric')
   )),
-  E.map(iso<Username>().wrap)
+  E.map(isoUsername.wrap)
 )
 
 const parseEmail: (email: string) => E.Either<UserDomainError, Email> = flow(
@@ -67,7 +71,7 @@ const parseEmail: (email: string) => E.Either<UserDomainError, Email> = flow(
     strHas('@'),
     () => createUserDomainError('EmailDoesntInclude@')
   )),
-  E.map(iso<Email>().wrap)
+  E.map(isoEmail.wrap)
 )
 
 export const parsePassword: (password: string) => E.Either<UserDomainError, ParsedPassword> = flow(
@@ -75,7 +79,7 @@ export const parsePassword: (password: string) => E.Either<UserDomainError, Pars
     isMinLength(6),
     () => createUserDomainError('PasswordTooShort')
   ),
-  E.map(iso<ParsedPassword>().wrap)
+  E.map(isoParsedPassword.wrap)
 )
 
 // TODO use traverse + lens
@@ -99,8 +103,8 @@ export const parseUser = (u: UnparsedUser): E.Either<UserDomainError, ParsedUser
 
 export const parseUserNoVal = (uP: any): ParsedUser => ({
   id: uP.id,
-  username: iso<Username>().wrap(uP.username),
-  email: iso<Email>().wrap(uP.email),
-  password: iso<ParsedPassword>().wrap(uP.password),
+  username: isoUsername.wrap(uP.username),
+  email: isoEmail.wrap(uP.email),
+  password: isoParsedPassword.wrap(uP.password),
   scores: uP.scores
 })
