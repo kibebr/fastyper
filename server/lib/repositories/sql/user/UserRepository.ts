@@ -1,12 +1,13 @@
 import * as O from 'fp-ts/lib/Option'
 import * as TE from 'fp-ts/TaskEither'
 import * as A from 'fp-ts/Array'
-import { flow } from 'fp-ts/lib/function'
+import { flow, constant } from 'fp-ts/lib/function'
 import { parseUserNoVal, ParsedUser } from '../../../domain/User'
 import {
   selectAllUsers,
   selectUserByUsername,
-  selectUserByEmail
+  selectUserByEmail,
+  insertUser
 } from './UserRepositoryCommands'
 
 export const queryAll: () => TE.TaskEither<Error, ParsedUser[]> = flow(
@@ -30,6 +31,7 @@ export const queryByEmail: (e: string) => TE.TaskEither<Error, O.Option<ParsedUs
   ))
 )
 
-export const insertUser: (u: ParsedUser) => TE.TaskEither<Error, string> = flow(
+export const queryInsertUser: (u: ParsedUser) => TE.TaskEither<Error, string> = flow(
   insertUser,
+  TE.map(constant(`New user inserted at ${new Date().toString()}`))
 )
