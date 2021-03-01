@@ -13,9 +13,11 @@
     <h1 class='tracking-tight text-8xl md:text-9xl text-logo-pink logo-text-shadow'>fastyper<span class='blink'>_</span></h1>
     <p class='my-5 text-2xl md:text-3xl'>Community-based typing speed test game.</p>
     <div>
-      <Button>
-        Play
-      </Button>
+      <a href='#/play'>
+        <Button>
+          Play
+        </Button>
+      </a>
     </div>
   </div>
 </section>

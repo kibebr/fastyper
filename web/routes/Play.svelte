@@ -6,7 +6,7 @@
 
   export let params
 
-  let wave = 0
+  let wave = 1
   let seconds = 0
   let minutes = 0
   let characters = 0
@@ -21,12 +21,21 @@
 
   let wordList
 
+  const calculatePoints = word => word.length * 2
+
   const onWordDestroyed = word => {
-    const points = word.name.length * 2
-    renderer.addDestroyedScore(word, points)
+    const points = calculatePoints(word)
     characters += word.name.length
     score += points
     prompt = ''
+
+    if (game.getWordObjs().length <= 10) {
+      const wordsToPush = wordList.words.slice(0, 10)
+      game.addWords(wordsToPush)
+      console.log(game.getWordObjs().length)
+    }
+
+    renderer.addDestroyedScore(word, points)
   }
 
   const onGameOver = () => {
@@ -51,6 +60,7 @@
     const gameLoop = () => {
       game.update()
 
+
       renderer.clearCanvas()
       renderer.paintAll('black')
       renderer.renderStars()
@@ -74,11 +84,10 @@
   })
 
   $: {
+    console.log('wave changed: ', wave)
     if (wordList) {
-      wave
-      const wordsToPush = wordList.words.slice(wave * 10, wave + 1 * 20)
-      console.log(wordsToPush)
-      game.addWords(wordsToPush)
+      const toPush = wordList.words.slice(0, 4)
+      game.addWords(toPush)
     }
   }
   $: game.changePrompt(prompt)

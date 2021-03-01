@@ -16,7 +16,7 @@
   }
 </style>
 
-<nav class='fixed flex flex-row items-center justify-between w-full px-10 bg-black h-14'>
+<nav class='fixed flex flex-row items-center justify-between w-full px-10 bg-transparent h-14'>
   <div>
     {#if $location === '/' ? showTitle : true}
       <a href='#/' transition:fade='{{ duration: 1000 }}'>
