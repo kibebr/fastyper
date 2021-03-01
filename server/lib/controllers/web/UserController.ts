@@ -5,7 +5,7 @@ import * as t from 'io-ts'
 import * as TP from 'ts-pattern'
 import * as C from './Controller'
 import { UserDomainError, UserDomainErrors, ParsedUser } from '../../domain/User'
-import { addUser, UserServiceError, UserServiceErrors } from '../../services/UserService'
+import { addUser, authUser, TokenizedUser, UserServiceError, UserServiceErrors } from '../../services/UserService'
 import { queryAll, queryByUsername } from '../../repositories/sql/user/UserRepository'
 import { constant, pipe, flow } from 'fp-ts/function'
 import { prop } from 'fp-ts-ramda'
@@ -14,6 +14,13 @@ const postUserV = t.type({
   body: t.type({
     username: t.string,
     email: t.string,
+    password: t.string
+  })
+})
+
+const authUserV = t.type({
+  body: t.type({
+    username: t.string,
     password: t.string
   })
 })
@@ -39,6 +46,7 @@ const userServiceErrorMsg = (err: UserServiceErrors): string =>
   TP.match(err)
     .exhaustive()
     .with('UserExists', constant('User with same username or email already exists.'))
+    .with('IncorrectCredentials', constant('Incorrect username or password.'))
     .run()
 
 export const getAll: () => T.Task<C.HttpResponse<string> | C.HttpResponse<ParsedUser[]>> = flow(
@@ -81,5 +89,22 @@ export const postUser: (req: C.HttpRequest) => T.Task<C.HttpResponse<string>> = 
         .otherwise(C.internalError)
     ),
     pipe('User created!', C.ok, T.of, constant)
+  )
+)
+
+export const postAuth: (req: C.HttpRequest) => T.Task<C.HttpResponse<string> | C.HttpResponse<TokenizedUser>> = flow(
+  authUserV.decode,
+  TE.fromEither,
+  TE.chainW(flow(
+    prop('body'),
+    authUser
+  )),
+  TE.foldW(
+    (error) => T.of(
+      TP.match(error)
+        .with({ tag: 'UserServiceError' }, flow(prop('reason'), userServiceErrorMsg, C.forbidden))
+        .otherwise(constant(C.internalError()))
+    ),
+    flow(C.ok, T.of)
   )
 )
