@@ -1,11 +1,11 @@
 <script>
   import { slide, fade } from 'svelte/transition'
   import { push, location } from 'svelte-spa-router'
+  import { session } from '../stores/Session.js'
 
   let showTitle = false
 
   document.addEventListener('scroll', () => {
-    console.log('scroll')
     showTitle = document.documentElement.scrollTop >= 200
   })
 </script>
@@ -31,10 +31,13 @@
         Play
       </a>
     {/if}
-    {#if $location !== '/auth'}
+    {#if $location !== '/auth' && !$session}
       <a href='#/auth' class='text-xl text-blue-400 border-b border-blue-400 hover:text-blue-500 hover:border-blue-500'>
         Log-in
       </a>
+    {/if}
+    {#if $session}
+      <a href='#/' class='text-xl'>{$session.username}</a>
     {/if}
   </div>
 </nav>

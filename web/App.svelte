@@ -2,15 +2,12 @@
   import Router from 'svelte-spa-router'
   import { fade } from 'svelte/transition'
   import { wrap } from 'svelte-spa-router/wrap'
-  import { location } from 'svelte-spa-router'
   import Message from './components/Message.svelte'
   import Home from './routes/Home.svelte'
   import Profile from './routes/Profile.svelte'
   import Words from './routes/Words.svelte'
   import Auth from './routes/Auth.svelte'
   import Navbar from './components/Navbar.svelte'
-  import MobileNavbar from './components/MobileNavbar.svelte'
-  import MediaQuery from 'svelte-media-query'
   import { message } from './stores/Alert.js'
 
   const routes = {
@@ -22,8 +19,6 @@
       asyncComponent: () => import('./routes/Play.svelte')
     }) 
   }
-
-  $: console.log($message)
 </script>
 
 <style global>

@@ -2,14 +2,18 @@
   import { fade } from 'svelte/transition'
   import { login } from '../services/UserService.js'
   import { message } from '../stores/Alert.js'
+  import { session } from '../stores/Session.js'
 
   let lUsername
   let lPassword
 
   const onAuth = async () => {
-    const result = await login('test', 'test')
+    const result = await login(lUsername, lPassword)
+
     if (result.status === 403) {
-      message.addAlert('success', 'Incorrect username or password.')
+      message.addAlert('error', 'Incorrect username or password.')
+    } else if (result.status === 200) {
+      session.set(await result.text())
     }
   }
 </script>
